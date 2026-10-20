@@ -1,1423 +1,168 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>황도 : 당신의 하늘을 읽어드립니다</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Noto Serif KR & Noto Sans KR -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        gold: {
-                            100: '#fef9e7',
-                            300: '#f5e0a3',
-                            400: '#e5c158',
-                            500: '#d4af37',
-                            600: '#b38f24',
-                            700: '#8c6d15',
-                        },
-                        navy: {
-                            900: '#060a12',
-                            800: '#0b0f19',
-                            700: '#121829',
-                            600: '#1a2238',
-                            500: '#263252',
-                        }
-                    },
-                    fontFamily: {
-                        serif: ['"Noto Serif KR"', 'serif'],
-                        sans: ['"Noto Sans KR"', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #060a12;
-            color: #e2e8f0;
-            overflow-x: hidden;
-        }
-
-        /* Deep Cosmic Background with Twinkling Stars */
-        .stars-bg {
-            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -2;
-        }
-
-        /* Glassmorphism Styling */
-        .glass-card {
-            background: rgba(18, 24, 41, 0.65);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        .glass-card-gold {
-            background: rgba(212, 175, 55, 0.08);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
-        }
-
-        .gold-gradient-text {
-            background: linear-gradient(135deg, #fff2a3 0%, #d4af37 50%, #aa7c11 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .gold-border-glow {
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0b0f19;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #d4af37;
-            border-radius: 3px;
-        }
-
-        /* Canvas styling */
-        canvas {
-            touch-action: none;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>황도 : 당신의 하늘을 읽어드립니다</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{colors:{gold:{100:'#fef9e7',300:'#f5e0a3',400:'#e5c158',500:'#d4af37',600:'#b38f24',700:'#8c6d15'},navy:{900:'#060a12',800:'#0b0f19',700:'#121829',600:'#1a2238',500:'#263252'}},fontFamily:{serif:['"Noto Serif KR"','serif'],sans:['"Noto Sans KR"','sans-serif']}}}};
+</script>
+<style>
+body{font-family:'Noto Sans KR',sans-serif;background:#060a12;color:#e2e8f0;overflow-x:hidden}
+.stars-bg{background:radial-gradient(ellipse at bottom,#1b2735 0%,#090a0f 100%);position:fixed;inset:0;z-index:-2}
+.glass-card{background:rgba(18,24,41,.72);backdrop-filter:blur(12px);border:1px solid rgba(212,175,55,.2);box-shadow:0 8px 32px #0006}
+.glass-card-gold{background:rgba(212,175,55,.08);backdrop-filter:blur(12px);border:1px solid rgba(212,175,55,.4);box-shadow:0 0 25px #d4af3726}
+.gold-gradient-text{background:linear-gradient(135deg,#fff2a3,#d4af37 50%,#aa7c11);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+canvas{touch-action:none;display:block}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0b0f19}::-webkit-scrollbar-thumb{background:#d4af37;border-radius:3px}
+</style>
 </head>
-<body class="min-h-screen flex flex-col justify-between relative selection:bg-gold-500 selection:text-navy-900">
-
-    <!-- Starry Background Canvas -->
-    <div class="stars-bg"></div>
-    <canvas id="bg-stars-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10"></canvas>
-
-    <!-- Header Navigation -->
-    <header class="sticky top-0 z-50 glass-card border-b border-gold-500/20 px-4 lg:px-8 py-3 transition-all duration-300">
-        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-            <!-- Logo -->
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('home')">
-                <div class="w-10 h-10 rounded-full border border-gold-500/50 flex items-center justify-center bg-gold-500/10 shadow-[0_0_10px_rgba(212,175,55,0.3)]">
-                    <i class="fa-solid font-serif text-gold-400 text-xl">黃</i>
-                </div>
-                <div>
-                    <h1 class="font-serif font-bold text-xl tracking-wider text-gold-300">황도 <span class="text-xs font-sans text-gray-400 font-normal ml-1">黃道: 당신의 하늘을 읽어드립니다</span></h1>
-                   
-                </div>
-            </div>
-
-            <!-- Nav Links -->
-            <nav class="flex items-center space-x-1 md:space-x-2 overflow-x-auto py-1 scrollbar-none">
-                <button onclick="switchTab('home')" id="nav-home" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all text-gold-400 bg-gold-500/10 border border-gold-500/30">
-                    HOME
-                </button>
-                <button onclick="switchTab('birth')" id="nav-birth" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-gold-300 transition-all">
-                    당신의 하늘
-                </button>
-                <button onclick="switchTab('studio')" id="nav-studio" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-gold-300 transition-all">
-                    별자리 만들기
-                </button>
-                <button onclick="switchTab('codex')" id="nav-codex" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-gold-300 transition-all">
-                    별 도감
-                </button>
-                <button onclick="switchTab('vault')" id="nav-vault" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-gold-300 transition-all">
-                    다이어리
-                </button>
-            </nav>
-
-            <!-- Sound Toggle -->
-            <button id="sound-btn" onclick="toggleAudio()" class="px-3 py-1.5 rounded-full border border-gold-500/30 bg-navy-800 text-xs text-gold-300 hover:bg-gold-500/20 transition flex items-center gap-2">
-                <i id="sound-icon" class="fa-solid fa-volume-xmark text-gray-400"></i>
-                <span id="sound-text" class="hidden sm:inline">음향 켜기</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- MAIN CONTENT CONTAINERS -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 lg:p-8 relative">
-
-        <!-- ================= PAGE 1: HOME ================= -->
-        <section id="page-home" class="tab-content space-y-12 py-4">
-            <!-- Hero Banner -->
-           <div class="glass-card rounded-2xl p-6 md:p-12 relative overflow-hidden text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
-        <div class="w-full max-w-2xl space-y-5 z-10">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-300 text-xs font-medium">
-                <i class="fa-solid fa-sparkles"></i> 천상열차분야지도(天象列車分野之圖) 기반 하늘 해석
-            </div>
-            
-            <!-- 무조건 2줄로 고정되도록 clamp 최소값을 낮추고 br태그 기준 분리 -->
-            <h3 class="font-serif font-bold leading-tight gold-gradient-text w-full" style="font-size: clamp(1.1rem, 2.8vw, 3rem); word-break: keep-all; overflow-wrap: break-word;">
-                당신이 태어난 날,<br>
-                하늘이 품었던 신비로운 별의 이야기
-            </h3>
-
-            <p class="text-gray-300 text-sm md:text-base leading-relaxed">
-                우리 전통 천문학은 하늘을 28개의 별자리구역(28수)과 3개의 울타리(삼원)로 나누어 세상과 사람의 운명을 읽었습니다. 당신의 탄생일 별자리를 확인하고, 나만의 새로운 별자리를 하늘에 새겨보세요.
-            </p>
-            <div class="flex flex-wrap gap-4 justify-center md:justify-start pt-2">
-                <button onclick="switchTab('birth')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-navy-900 font-bold hover:brightness-110 transition shadow-lg shadow-gold-500/20 flex items-center gap-2">
-                    <i class="fa-solid fa-compass-drafting"></i> 나의 하늘 보기
-                </button>
-                <button onclick="switchTab('studio')" class="px-6 py-3 rounded-xl glass-card border border-gold-500/40 text-gold-300 font-semibold hover:bg-gold-500/10 transition flex items-center gap-2">
-                    <i class="fa-solid fa-pen-ruler"></i> 나만의 별자리 그리기
-                </button>
-            </div>
-        </div>
-
-        <!-- 우측 그림/일러스트 영역 (누락되었던 부분 복구) -->
-        <div class="relative z-10 flex items-center justify-center">
-            <!-- 기존에 사용하시던 이미지나 일러스트 태그를 이 위치에 넣어주세요 -->
-            <div class="w-48 h-48 md:w-64 md:h-64 rounded-2xl flex items-center justify-center border border-gold-500/20 bg-gold-500/5">
-                <i class="fa-solid fa-star-to-of-the-night text-gold-400 text-6xl"></i>
-            </div>
-        </div>
-    </div>
-                <!-- Cosmic Graphic Decoration -->
-                <div class="relative w-64 h-64 md:w-80 md:h-80 flex-shrink-0 flex items-center justify-center">
-                    <div class="absolute inset-0 rounded-full border border-gold-500/20 animate-spin" style="animation-duration: 40s;"></div>
-                    <div class="absolute inset-4 rounded-full border border-dashed border-gold-500/40 animate-spin" style="animation-duration: 25s; animation-direction: reverse;"></div>
-                    <div class="absolute inset-12 rounded-full border border-gold-400/30"></div>
-                    <div class="w-32 h-32 rounded-full bg-gradient-to-tr from-gold-600/30 to-amber-300/10 flex items-center justify-center backdrop-blur-md border border-gold-400/50 shadow-[0_0_30px_rgba(212,175,55,0.3)]">
-                        <i class="fa-solid fa-dharmachakra text-6xl text-gold-400/80"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stats & Highlights -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-card p-6 rounded-xl border-l-4 border-l-gold-500 flex items-start gap-4">
-                    <div class="p-3 bg-gold-500/10 rounded-lg text-gold-400 text-2xl">
-                        <i class="fa-solid fa-draw-polygon"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-serif font-bold text-lg text-gold-300">28수 (28 Mansions)</h3>
-                        <p class="text-xs text-gray-400 mt-1">동서남북 사방을 수호하는 28개 별자리 구역과 사신(동청룡, 북현무, 서백호, 남주작)의 기운.</p>
-                    </div>
-                </div>
-                <div class="glass-card p-6 rounded-xl border-l-4 border-l-gold-500 flex items-start gap-4">
-                    <div class="p-3 bg-gold-500/10 rounded-lg text-gold-400 text-2xl">
-                        <i class="fa-solid fa-ring"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-serif font-bold text-lg text-gold-300">삼원 (3 Enclosures)</h3>
-                        <p class="text-xs text-gray-400 mt-1">하늘의 중심인 자미원, 태미원, 천시원이 펼치는 고유한 영역의 운율.</p>
-                    </div>
-                </div>
-                <div class="glass-card p-6 rounded-xl border-l-4 border-l-gold-500 flex items-start gap-4">
-                    <div class="p-3 bg-gold-500/10 rounded-lg text-gold-400 text-2xl">
-                        <i class="fa-solid fa-palette"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-serif font-bold text-lg text-gold-300">성좌 공방 (Studio)</h3>
-                        <p class="text-xs text-gray-400 mt-1">직접 별들을 잇고 설화를 부여하여 수호 별자리를 창조하는 대화형 공간.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Interactive Quick Teaser / Daily Sky Insight -->
-            <div class="glass-card p-8 rounded-2xl space-y-6">
-                <div class="flex items-center justify-between border-b border-gold-500/20 pb-4">
-                    <div>
-                        <h3 class="font-serif text-xl font-bold text-gold-300"><i class="fa-solid fa-sun mr-2 text-gold-400"></i>오늘의 하늘 기운</h3>
-                        <p class="text-xs text-gray-400">현재 태양이 지나는 황도상 위치와 오늘의 상징 메시지</p>
-                    </div>
-                    <span id="today-date-str" class="text-xs font-mono text-gold-400/80 bg-navy-900 px-3 py-1 rounded-full border border-gold-500/20"></span>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                    <div class="p-5 rounded-xl bg-navy-900/60 border border-gold-500/20 space-y-3">
-                        <div class="flex items-center gap-3">
-                            <span id="today-mansion-badge" class="px-3 py-1 bg-gold-500/20 text-gold-300 font-serif font-bold text-sm rounded-lg border border-gold-500/40">각수 (角宿)</span>
-                            <span id="today-guardian" class="text-xs text-gray-300"><i class="fa-solid fa-dragon text-blue-400 mr-1"></i>동방 청룡</span>
-                        </div>
-                        <h4 id="today-title" class="font-serif font-bold text-lg text-white">새로운 시작과 성장의 기운</h4>
-                        <p id="today-desc" class="text-sm text-gray-300 leading-relaxed">오늘은 28수 중 첫 번째 별자리인 각수의 영향 아래 있습니다. 창의적인 생각을실행에 옮기거나 새로운 관계를 시작하기에 최상의 날입니다.</p>
-                    </div>
-                    <div class="space-y-4 text-center md:text-left">
-                        <h4 class="font-serif text-lg font-semibold text-gold-200">당신의 하늘도 지금 바로 읽어보시겠습니까?</h4>
-                        <p class="text-xs text-gray-400 leading-relaxed">생년월일을 입력하면 황도길 위에서 태양이 머물렀던 28수와 수호 동물, 당신만의 사주 하늘 이야기를 들려드립니다.</p>
-                        <button onclick="switchTab('birth')" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-gold-500/20 text-gold-300 border border-gold-500/40 hover:bg-gold-500/30 transition text-sm font-semibold">
-                            나의 하늘 보기 <i class="fa-solid fa-arrow-right ml-1"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= PAGE 2: BIRTH SKY & FORTUNE ================= -->
-        <section id="page-birth" class="tab-content hidden space-y-8 py-4">
-            <div class="text-center max-w-2xl mx-auto space-y-2">
-                <h2 class="font-serif text-3xl font-bold gold-gradient-text">탄생 하늘 & 운세 (Birth Sky Reading)</h2>
-                <p class="text-xs text-gray-400">태어난 시각의 황도 좌표와 28수 별자리를 기반으로 고유한 하늘의 서사를 읽어드립니다.</p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Left Input Form (4 cols) -->
-                <div class="lg:col-span-4 glass-card p-6 rounded-2xl space-y-5 h-fit">
-                    <h3 class="font-serif font-bold text-lg text-gold-300 border-b border-gold-500/20 pb-3">
-                        <i class="fa-solid fa-user-gear mr-2"></i>명조(命造) 정보 입력
-                    </h3>
-                    <form id="birth-form" onsubmit="calculateBirthSky(event)" class="space-y-4">
-                        
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">생년월일 (Birth Date)</label>
-                            <input type="date" id="user-date" required class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold-400">
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-300 mb-1">태어난 시 (Time)</label>
-                                <select id="user-time" class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold-400">
-                                    <option value="0">자시 (23:00~01:00)</option>
-                                    <option value="2">축시 (01:00~03:00)</option>
-                                    <option value="4">인시 (03:00~05:00)</option>
-                                    <option value="6">묘시 (05:00~07:00)</option>
-                                    <option value="8" selected>진시 (07:00~09:00)</option>
-                                    <option value="10">사시 (09:00~11:00)</option>
-                                    <option value="12">오시 (11:00~13:00)</option>
-                                    <option value="14">미시 (13:00~15:00)</option>
-                                    <option value="16">신시 (15:00~17:00)</option>
-                                    <option value="18">유시 (17:00~19:00)</option>
-                                    <option value="20">술시 (19:00~21:00)</option>
-                                    <option value="22">해시 (21:00~23:00)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-300 mb-1">성별 (Gender)</label>
-                                <select id="user-gender" class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold-400">
-                                    <option value="양(陽)">남성 (陽)</option>
-                                    <option value="음(陰)">여성 (陰)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-navy-900 font-bold hover:brightness-110 transition shadow-lg shadow-gold-500/20 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> 나의 하늘 보기
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Right Sky Canvas & Interpretation (8 cols) -->
-                <div class="lg:col-span-8 space-y-6">
-                    <!-- Interactive Interactive Sky Canvas -->
-                    <div class="glass-card p-4 rounded-2xl relative flex flex-col items-center">
-                        <div class="w-full flex items-center justify-between px-2 mb-2">
-                            <span class="text-xs font-serif text-gold-300"><i class="fa-solid fa-circle-nodes mr-1"></i>탄생 성도 (Birth Star Chart)</span>
-                            <span id="sky-coords-display" class="text-[11px] font-mono text-gray-400">황도 0.0° / 28수 미측정</span>
-                        </div>
-                        <div class="relative w-full aspect-square max-w-[500px] bg-navy-900/80 rounded-xl border border-gold-500/30 overflow-hidden shadow-inner flex items-center justify-center">
-                            <canvas id="birth-sky-canvas" class="w-full h-full cursor-crosshair"></canvas>
-                            <div id="sky-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-navy-900/90 space-y-3">
-                                <i class="fa-solid fa-dharmachakra text-5xl text-gold-500/40 animate-pulse"></i>
-                                <p class="text-sm text-gray-300 font-serif">왼쪽에서 명조 정보를 입력하고<br><span class="text-gold-400">'하늘 펼치기'</span> 버튼을 눌러주세요.</p>
-                            </div>
-                        </div>
-                        <p class="text-[11px] text-gray-400 mt-2 text-center">※ 마우스/터치로 하늘 위 별자리 노드를 클릭하면 해당 별자리의 상세한 기운을 확인할 수 있습니다.</p>
-                    </div>
-
-                    <!-- Fortune Output Card -->
-                    <div id="fortune-result-card" class="glass-card p-6 rounded-2xl space-y-5 hidden">
-                        <div class="flex flex-wrap items-center justify-between border-b border-gold-500/20 pb-4 gap-2">
-                            <div>
-                                <span class="text-xs text-gold-400/80 font-mono" id="res-user-tag">홍길동 님의 탄생 성좌</span>
-                                <h3 class="font-serif text-2xl font-bold text-white flex items-center gap-2" id="res-mansion-name">
-                                    각수 (角宿) - 동방 청룡
-                                </h3>
-                            </div>
-                            <button onclick="saveBirthReading()" class="px-4 py-2 bg-gold-500/20 hover:bg-gold-500/30 border border-gold-500/40 rounded-lg text-xs font-semibold text-gold-300 transition flex items-center gap-1.5">
-                                <i class="fa-solid fa-bookmark"></i> 보관함에 저장
-                            </button>
-                        </div>
-
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <div class="bg-navy-900/60 p-3 rounded-lg border border-gold-500/20 text-center">
-                                <span class="text-[10px] text-gray-400 block">수호 신수</span>
-                                <span class="font-serif text-sm font-bold text-gold-300" id="res-guardian">청룡 (Blue Dragon)</span>
-                            </div>
-                            <div class="bg-navy-900/60 p-3 rounded-lg border border-gold-500/20 text-center">
-                                <span class="text-[10px] text-gray-400 block">상징 동물</span>
-                                <span class="font-serif text-sm font-bold text-gold-300" id="res-animal">이목구비 (교룡)</span>
-                            </div>
-                            <div class="bg-navy-900/60 p-3 rounded-lg border border-gold-500/20 text-center">
-                                <span class="text-[10px] text-gray-400 block">오행 속성</span>
-                                <span class="font-serif text-sm font-bold text-gold-300" id="res-element">목(木) / 시작</span>
-                            </div>
-                            <div class="bg-navy-900/60 p-3 rounded-lg border border-gold-500/20 text-center">
-                                <span class="text-[10px] text-gray-400 block">황도 경도</span>
-                                <span class="font-mono text-sm font-bold text-gold-300" id="res-ecliptic-deg">12.4°</span>
-                            </div>
-                        </div>
-
-                        <div class="space-y-3 text-sm text-gray-300 leading-relaxed bg-navy-900/40 p-4 rounded-xl border border-gold-500/10">
-                            <h4 class="font-serif font-bold text-gold-300 text-base border-b border-gold-500/10 pb-1">하늘의 괘상 및 총운 (Celestial Decree)</h4>
-                            <p id="res-fortune-text">당신이 태어난 순간, 태양은 동방 청룡의 머리에 해당하는 각수에 머물렀습니다. 이는 탁월한 리더십과 개척정신, 강인한 직관력을 상징합니다. 어려움 속에서도 스스로 길을 밝혀나갈 능력이 뛰어나며...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= PAGE 3: CUSTOM CONSTELLATION STUDIO ================= -->
-        <section id="page-studio" class="tab-content hidden space-y-6 py-4">
-            <div class="text-center max-w-2xl mx-auto space-y-2">
-                <h2 class="font-serif text-3xl font-bold gold-gradient-text">나만의 별자리 공방 (Constellation Studio)</h2>
-                <p class="text-xs text-gray-400">우주 공간 위에 별들을 배치하고 선을 이어 당신만의 전설과 기운을 담은 수호 별자리를 창조하세요.</p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <!-- Studio Controls Sidebar (4 cols) -->
-                <div class="lg:col-span-4 glass-card p-6 rounded-2xl space-y-5">
-                    <h3 class="font-serif font-bold text-lg text-gold-300 border-b border-gold-500/20 pb-3 flex items-center justify-between">
-                        <span><i class="fa-solid fa-sliders mr-2"></i>별자리 설정</span>
-                        <span class="text-xs text-gray-400 font-sans font-normal" id="studio-node-count">별 0개 / 연결 0개</span>
-                    </h3>
-
-                    <!-- Tool Modes -->
-                    <div class="space-y-2">
-                        <label class="block text-xs font-semibold text-gray-300">작업 도구 (Tool Mode)</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="setStudioMode('add')" id="btn-mode-add" class="studio-tool-btn px-3 py-2 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 bg-gold-500/20 border-gold-400 text-gold-300">
-                                <i class="fa-solid fa-plus-circle"></i> 별 찍기 (Add Star)
-                            </button>
-                            <button onclick="setStudioMode('connect')" id="btn-mode-connect" class="studio-tool-btn px-3 py-2 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 bg-navy-900 border-gold-500/30 text-gray-300 hover:border-gold-400">
-                                <i class="fa-solid fa-diagram-project"></i> 선 잇기 (Connect)
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Customization Options -->
-                    <div class="space-y-4 pt-2 border-t border-gold-500/10">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">주요 별 색상 (Star Color)</label>
-                            <div class="flex items-center gap-3">
-                                <input type="color" id="studio-star-color" value="#d4af37" onchange="redrawStudioCanvas()" class="w-10 h-10 rounded cursor-pointer bg-transparent border-0">
-                                <span class="text-xs text-gray-400">황금빛 / 청색 / 백색 등 원하는 빛 선택</span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">별자리 이름 (Constellation Name)</label>
-                            <input type="text" id="studio-title" placeholder="예: 수호하는 여우자리" class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold-400">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">전설 & 수호의 의미 (Story & Meaning)</label>
-                            <textarea id="studio-desc" rows="3" placeholder="이 별자리에 담긴 전설이나 나를 지켜주는 기운을 기록하세요..." class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold-400 resize-none"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Canvas Action Controls -->
-                    <div class="flex flex-wrap gap-2 pt-2 border-t border-gold-500/10">
-                        <button onclick="undoStudioStep()" class="flex-1 py-2 rounded-lg bg-navy-900 border border-gold-500/30 text-xs text-gray-300 hover:text-white hover:border-gold-400 transition">
-                            <i class="fa-solid fa-rotate-left mr-1"></i> 되돌리기
-                        </button>
-                        <button onclick="clearStudioCanvas()" class="flex-1 py-2 rounded-lg bg-navy-900 border border-red-500/30 text-xs text-red-400 hover:bg-red-500/10 transition">
-                            <i class="fa-solid fa-trash-can mr-1"></i> 전체 지우기
-                        </button>
-                    </div>
-
-                    <button onclick="saveCustomConstellation()" class="w-full py-3 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-navy-900 font-bold hover:brightness-110 transition shadow-lg shadow-gold-500/20 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-floppy-disk"></i> 내 별자리 보관함에 저장하기
-                    </button>
-                </div>
-
-                <!-- Interactive Studio Canvas Area (8 cols) -->
-                <div class="lg:col-span-8 glass-card p-4 rounded-2xl flex flex-col items-center">
-                    <div class="w-full flex items-center justify-between px-2 mb-2">
-                        <span class="text-xs font-serif text-gold-300" id="studio-status-tip">
-                            <i class="fa-solid fa-lightbulb text-gold-400 mr-1"></i> [별 찍기 모드] 캔버스를 클릭하여 새로운 별을 생성하세요.
-                        </span>
-                        <button onclick="toggleGridStudio()" class="text-[11px] text-gray-400 hover:text-gold-300 flex items-center gap-1">
-                            <i class="fa-solid fa-border-all"></i> 격자 토글
-                        </button>
-                    </div>
-                    
-                    <div class="relative w-full aspect-square max-w-[600px] bg-navy-900 rounded-xl border border-gold-500/40 overflow-hidden shadow-2xl">
-                        <canvas id="studio-canvas" class="w-full h-full cursor-crosshair"></canvas>
-                    </div>
-
-                    <div class="w-full max-w-[600px] flex items-center justify-between mt-3 text-xs text-gray-400 px-1">
-                        <span><i class="fa-solid fa-circle text-[8px] text-gold-400 mr-1"></i>노드 클릭 후 다른 노드를 클릭하면 선으로 이어집니다.</span>
-                        <span>Touch & Click Supported</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= PAGE 4: CODEX (28 MANSIONS & 3 ENCLOSURES) ================= -->
-        <section id="page-codex" class="tab-content hidden space-y-8 py-4">
-            <div class="text-center max-w-2xl mx-auto space-y-2">
-                <h2 class="font-serif text-3xl font-bold gold-gradient-text">28수 & 삼원 백과 도감 (Sky Codex)</h2>
-                <p class="text-xs text-gray-400">우리 하늘의 근간을 이루는 3대 울타리(삼원)와 28개 수호 성좌의 전설과 기운을 탐색하세요.</p>
-            </div>
-
-            <!-- Search and Filter Bar -->
-            <div class="glass-card p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 max-w-4xl mx-auto">
-                <!-- Search Input -->
-                <div class="relative w-full sm:w-72">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                    <input type="text" id="codex-search" oninput="filterCodex()" placeholder="성좌 이름, 수호동물 검색..." class="w-full bg-navy-900 border border-gold-500/30 rounded-lg pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-gold-400">
-                </div>
-
-                <!-- Category Filters -->
-                <div class="flex flex-wrap items-center gap-1.5 w-full sm:w-auto justify-center">
-                    <button onclick="setCodexCategory('all')" class="codex-cat-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gold-500/20 text-gold-300 border border-gold-500/40" data-cat="all">전체</button>
-                    <button onclick="setCodexCategory('삼원')" class="codex-cat-btn px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gold-300 bg-navy-900 border border-gold-500/20" data-cat="삼원">삼원 (3 Enclosures)</button>
-                    <button onclick="setCodexCategory('동청룡')" class="codex-cat-btn px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gold-300 bg-navy-900 border border-gold-500/20" data-cat="동청룡">동방 청룡</button>
-                    <button onclick="setCodexCategory('북현무')" class="codex-cat-btn px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gold-300 bg-navy-900 border border-gold-500/20" data-cat="북현무">북방 현무</button>
-                    <button onclick="setCodexCategory('서백호')" class="codex-cat-btn px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gold-300 bg-navy-900 border border-gold-500/20" data-cat="서백호">서방 백호</button>
-                    <button onclick="setCodexCategory('남주작')" class="codex-cat-btn px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gold-300 bg-navy-900 border border-gold-500/20" data-cat="남주작">남방 주작</button>
-                </div>
-            </div>
-
-            <!-- Grid Container -->
-            <div id="codex-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Dynamically injected via JS -->
-            </div>
-        </section>
-
-        <!-- ================= PAGE 5: VAULT / SAVED GALLERY ================= -->
-        <section id="page-vault" class="tab-content hidden space-y-8 py-4">
-            <div class="text-center max-w-2xl mx-auto space-y-2">
-                <h2 class="font-serif text-3xl font-bold gold-gradient-text"> 성좌 다이어리</h2>
-                <p class="text-xs text-gray-400">저장된 탄생 운세와 직접 창조한 별자리 및 나만의 별빛 감상 메모를 확인하세요.</p>
-            </div>
-
-            <!-- Sub Tabs -->
-            <div class="flex justify-center space-x-2 border-b border-gold-500/20 pb-3">
-                <button onclick="switchVaultSubTab('readings')" id="vtab-readings" class="px-4 py-2 rounded-lg text-xs font-bold bg-gold-500/20 text-gold-300 border border-gold-500/40">
-                    <i class="fa-solid fa-scroll mr-1.5"></i>저장된 탄생 운세
-                </button>
-                <button onclick="switchVaultSubTab('custom')" id="vtab-custom" class="px-4 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-gold-300 bg-navy-900 border border-gold-500/20">
-                    <i class="fa-solid fa-star mr-1.5"></i>내가 만든 별자리
-                </button>
-                <button onclick="switchVaultSubTab('notes')" id="vtab-notes" class="px-4 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-gold-300 bg-navy-900 border border-gold-500/20">
-                    <i class="fa-solid fa-book-pen mr-1.5"></i>하늘 일기장
-                </button>
-            </div>
-
-            <!-- Vault Sub-content: Saved Birth Readings -->
-            <div id="vault-readings-section" class="space-y-4">
-                <div id="saved-readings-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Dynamic Injected -->
-                </div>
-            </div>
-
-            <!-- Vault Sub-content: Saved Custom Constellations -->
-            <div id="vault-custom-section" class="hidden space-y-4">
-                <div id="saved-custom-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Dynamic Injected -->
-                </div>
-            </div>
-
-            <!-- Vault Sub-content: Personal Notes & Reflections -->
-            <div id="vault-notes-section" class="hidden max-w-3xl mx-auto space-y-6">
-                <div class="glass-card p-6 rounded-2xl space-y-4">
-                    <h3 class="font-serif font-bold text-lg text-gold-300"><i class="fa-solid fa-feather mr-2"></i>오늘 하늘의 감상 남기기</h3>
-                    <textarea id="note-input" rows="3" placeholder="밤하늘을 보며 느낀 생각이나 다짐을 기록해보세요..." class="w-full bg-navy-900 border border-gold-500/30 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-gold-400 resize-none"></textarea>
-                    <div class="flex justify-end">
-                        <button onclick="saveSkyNote()" class="px-5 py-2 rounded-lg bg-gold-500/20 border border-gold-500/40 text-gold-300 hover:bg-gold-500/30 transition text-xs font-bold">
-                            <i class="fa-solid fa-paper-plane mr-1"></i> 일기 저장
-                        </button>
-                    </div>
-                </div>
-
-                <div id="sky-notes-list" class="space-y-3">
-                    <!-- Dynamic Injected -->
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Modal Dialog for Codex / Vault Detailed View -->
-    <div id="info-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="glass-card-gold max-w-lg w-full rounded-2xl p-6 relative space-y-4 max-h-[85vh] overflow-y-auto">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-navy-900/80 border border-gold-500/30 text-gray-400 hover:text-white flex items-center justify-center">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div id="modal-content">
-                <!-- Dynamic Modal Content -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-gold-500 text-navy-900 font-bold px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 flex items-center gap-2">
-        <i class="fa-solid fa-circle-check"></i>
-        <span id="toast-msg">저장되었습니다.</span>
-    </div>
-
-    <!-- Footer -->
-    <footer class="glass-card border-t border-gold-500/20 py-6 px-4 mt-12 text-center text-xs text-gray-400 space-y-2">
-        <p class="font-serif text-gold-300/80">황도(黃道) : 당신의 하늘을 읽어드립니다</p>
-        <p>전통 천상열차분야지도 천문 사상을 현대적으로 재해석한 대화형 웹 애플리케이션입니다.</p>
-        <p class="text-[10px] text-gray-400">© 2026 HWANGDO Celestial Studio. All rights reserved.</p>
-    </footer>
-
-    <!-- MAIN JAVASCRIPT LOGIC -->
-    <script>
-        /* ================= AUDIO SYSTEM (Web Audio API) ================= */
-        let audioCtx = null;
-        let isAudioMuted = true;
-
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
-        function toggleAudio() {
-            initAudio();
-            isAudioMuted = !isAudioMuted;
-            const btnIcon = document.getElementById('sound-icon');
-            const btnText = document.getElementById('sound-text');
-            if (isAudioMuted) {
-                btnIcon.className = "fa-solid fa-volume-xmark text-gray-400";
-                btnText.innerText = "음향 켜기";
-            } else {
-                btnIcon.className = "fa-solid fa-volume-high text-gold-400 animate-pulse";
-                btnText.innerText = "음향 끄기";
-                playChime(523.25); // C5 tone on start
-            }
-        }
-
-        function playChime(freq = 440, duration = 0.8) {
-            if (isAudioMuted || !audioCtx) return;
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {}
-        }
-
-        /* ================= TAB NAVIGATION ================= */
-        function switchTab(tabId) {
-            playChime(659.25, 0.2); // E5 chime
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-gold-400', 'bg-gold-500/10', 'border', 'border-gold-500/30');
-                btn.classList.add('text-gray-300');
-            });
-
-            const targetPage = document.getElementById(`page-${tabId}`);
-            if (targetPage) targetPage.classList.remove('hidden');
-
-            const activeNav = document.getElementById(`nav-${tabId}`);
-            if (activeNav) {
-                activeNav.classList.remove('text-gray-300');
-                activeNav.classList.add('text-gold-400', 'bg-gold-500/10', 'border', 'border-gold-500/30');
-            }
-
-            if (tabId === 'studio') {
-                setTimeout(resizeStudioCanvas, 50);
-            } else if (tabId === 'vault') {
-                renderSavedReadings();
-                renderSavedCustomConstellations();
-                renderSkyNotes();
-            }
-        }
-
-        /* ================= 28 MANSIONS & 3 ENCLOSURES DATA ================= */
-        const CODEX_DATA = [
-            // 3 Enclosures (삼원)
-            { id: 'ziwei', type: '삼원', name: '자미원 (紫微垣)', guardian: '천자의 궁궐', desc: '하늘의 중심이자 만물의 으뜸이 되는 공간. 제왕과 나라의 안녕을 다스리는 보좌의 기운입니다.', stars: '북극성, 태좌 등 15성' },
-            { id: 'taiwei', type: '삼원', name: '태미원 (太微垣)', guardian: '조정과 대신', desc: '하늘의 정부와 신하들이 머무는 곳으로 지혜, 덕망, 재상의 영민함을 통찰합니다.', stars: '오제좌, 공진 등 10성' },
-            { id: 'tianshi', type: '삼원', name: '천시원 (天市垣)', guardian: '시장의 저자', desc: '하늘의 백성들과 풍요로운 거래가 이루어지는 성좌. 만인의 번영과 자비의 기운을 밝힙니다.', stars: '시루, 도사 등 22성' },
-
-            // 동방 청룡 (7수)
-            { id: 'm1', type: '동청룡', name: '각수 (角宿)', guardian: '이목구비 (Dragon Horn)', desc: '청룡의 뿔. 만물의 만개와 새로운 생명의 용솟음을 상징하는 수호성입니다.', stars: 'Spica 외 2성' },
-            { id: 'm2', type: '동청룡', name: '항수 (亢宿)', guardian: '목 (Dragon Neck)', desc: '청룡의 목. 흔들리지 않는 신념과 강직한 기개를 다스리는 기운입니다.', stars: 'Virginis 4성' },
-            { id: 'm3', type: '동청룡', name: '저수 (氐宿)', guardian: '가슴 (Dragon Chest)', desc: '청룡의 가슴. 굳건한 뿌리와 집안의 안락함, 단단한 기초를 선사합니다.', stars: 'Librae 4성' },
-            { id: 'm4', type: '동청룡', name: '방수 (房宿)', guardian: '배 (Dragon Belly)', desc: '청룡의 배. 덕을 쌓고 명예와 풍요를 거두는 기운이 충만합니다.', stars: 'Scorpii 4성' },
-            { id: 'm5', type: '동청룡', name: '심수 (心宿)', guardian: '심장 (Dragon Heart)', desc: '청룡의 심장. 타오르는 열정과 뜨거운 예술적 감수성을 수호합니다.', stars: 'Antares 외 3성' },
-            { id: 'm6', type: '동청룡', name: '미수 (尾宿)', guardian: '꼬리 (Dragon Tail)', desc: '청룡의 꼬리. 마무리의 완벽함과 지속적인 지구력을 상징합니다.', stars: 'Scorpii 9성' },
-            { id: 'm7', type: '동청룡', name: '기수 (箕宿)', guardian: '키 (Dragon Winnow)', desc: '청룡의 바람키. 순풍에 돛을 단 듯 유연하고 자유로운 변화를 이끕니다.', stars: 'Sagittarii 4성' },
-
-            // 북방 현무 (7수)
-            { id: 'm8', type: '북현무', name: '두수 (斗宿)', guardian: '남두육성 (Black Tortoise)', desc: '현무의 머리. 수명과 지혜를 주관하는 영험한 보좌 별자리입니다.', stars: 'Sagittarii 6성' },
-            { id: 'm9', type: '북현무', name: '우수 (牛宿)', guardian: '견우성 (Ox)', desc: '현무의 뿔. 성실함과 끈기, 만인과의 진실된 인연을 맺어줍니다.', stars: 'Capricorni 6성' },
-            { id: 'm10', type: '북현무', name: '여수 (女宿)', guardian: '직녀성 (Maiden)', desc: '현무의 섬세함. 예술적 완성도와 고결한 미적 직관을 선사합니다.', stars: 'Aquarii 4성' },
-            { id: 'm11', type: '북현무', name: '허수 (虛宿)', guardian: '사당 (Void)', desc: '현무의 몸. 헛된 욕망을 비우고 진정한 평정심에 이르게 합니다.', stars: 'Aquarii 2성' },
-            { id: 'm12', type: '북현무', name: '위수 (危宿)', guardian: '지붕 (Rooftop)', desc: '현무의 높은 곳. 위험을 감지하는 매서운 통찰과 경계심의 별입니다.', stars: 'Pegasi 3성' },
-            { id: 'm13', type: '북현무', name: '실수 (室宿)', guardian: '집 (House)', desc: '현무의 안식처. 영토의 번영과 안락한 가정을 지키는 보금자리입니다.', stars: 'Pegasi 2성' },
-            { id: 'm14', type: '북현무', name: '벽수 (壁宿)', guardian: '벽 (Wall)', desc: '현무의 수호벽. 학문과 지혜를 단단히 감싸는 훌륭한 배움의 기운입니다.', stars: 'Pegasi 2성' },
-
-            // 서방 백호 (7수)
-            { id: 'm15', type: '서백호', name: '규수 (奎宿)', guardian: '발톱 (White Tiger)', desc: '백호의 규장각. 문장력과 예리한 직관을 발휘하게 돕는 별입니다.', stars: 'Andromedae 16성' },
-            { id: 'm16', type: '서백호', name: '루수 (婁宿)', guardian: '목 (Tiger Neck)', desc: '백호의 목. 백성을 불러 모으고 인재를 다스리는 리더십을 발휘합니다.', stars: 'Arietis 3성' },
-            { id: 'm17', type: '서백호', name: '위수 (胃宿)', guardian: '위장 (Tiger Belly)', desc: '백호의 창고. 풍요로운 재물과 결실을 지켜주는 포용의 별입니다.', stars: 'Arietis 3성' },
-            { id: 'm18', type: '서백호', name: '묘수 (昴宿)', guardian: '털 (Pleiades)', desc: '백호의 갈기. 하늘의 소리를 전하는 신비로운 직관을 열어줍니다.', stars: 'Pleiades 7성' },
-            { id: 'm19', type: '서백호', name: '필수 (畢宿)', guardian: '그물 (Net)', desc: '백호의 사냥그물. 모든 시련을 이겨내고 기회를 잡는 집념을 뜻합니다.', stars: 'Hyades 8성' },
-            { id: 'm20', type: '서백호', name: '자수 (觜宿)', guardian: '부리 (Beak)', desc: '백호의 머리. 정교한 분석력과 거침없는 논리적 판단의 기운입니다.', stars: 'Otionis 3성' },
-            { id: 'm21', type: '서백호', name: '삼수 (參宿)', guardian: '장군 (Orion Belt)', desc: '백호의 용맹. 용장처럼 거침없는 도전과 추진력을 배가시킵니다.', stars: 'Betelgeuse 외 7성' },
-
-            // 남방 주작 (7수)
-            { id: 'm22', type: '남주작', name: '정수 (井宿)', guardian: '우물 (Red Bird Well)', desc: '주작의 우물. 끊임없이 샘솟는 맑은 샘물처럼 창의성을 더합니다.', stars: 'Geminorum 8성' },
-            { id: 'm23', type: '남주작', name: '귀수 (鬼宿)', guardian: '눈 (Bird Eye)', desc: '주작의 눈. 보이지 않는 가치를 꿰뚫어 보는 자안(靈眼)을 엽니다.', stars: 'Cancri 4성' },
-            { id: 'm24', type: '남주작', name: '류수 (柳宿)', guardian: '부리 (Bird Beak)', desc: '주작의 버드나무 부리. 매끄러운 언변과 뛰어난 소통 능력을 줍니다.', stars: 'Hydrae 8성' },
-            { id: 'm25', type: '남주작', name: '성수 (星宿)', guardian: '목 (Bird Neck)', desc: '주작의 붉은 목. 반짝이는 예술성과 온 세상의 주목을 받는 밝음입니다.', stars: 'Alphard 7성' },
-            { id: 'm26', type: '남주작', name: '장수 (張宿)', guardian: '날개 (Bird Wings)', desc: '주작의 펼쳐진 날개. 포용력과 큰 호연지기를 품게 도와줍니다.', stars: 'Crateris 6성' },
-            { id: 'm27', type: '남주작', name: '익수 (翼宿)', guardian: '깃털 (Feathers)', desc: '주작의 깃털. 사방으로 널리 이름을 알리는 명예와 웅비의 성좌입니다.', stars: 'Corvi 22성' },
-            { id: 'm28', type: '남주작', name: '진수 (軫宿)', guardian: '수레 (Chariot)', desc: '주작의 가마. 빠르고 유연한 이동성과 여행의 안전을 도모합니다.', stars: 'Corvi 4성' }
-        ];
-
-        /* ================= BACKGROUND TWINKLING STARS ================= */
-        let bgCanvas, bgCtx;
-        let bgStars = [];
-
-        function initBgStars() {
-            bgCanvas = document.getElementById('bg-stars-canvas');
-            if (!bgCanvas) return;
-            bgCtx = bgCanvas.getContext('2d');
-            resizeBgCanvas();
-            window.addEventListener('resize', resizeBgCanvas);
-
-            bgStars = [];
-            for (let i = 0; i < 150; i++) {
-                bgStars.push({
-                    x: Math.random() * bgCanvas.width,
-                    y: Math.random() * bgCanvas.height,
-                    radius: Math.random() * 1.5 + 0.5,
-                    alpha: Math.random(),
-                    speed: Math.random() * 0.02 + 0.005
-                });
-            }
-            animateBgStars();
-        }
-
-        function resizeBgCanvas() {
-            if (!bgCanvas) return;
-            bgCanvas.width = window.innerWidth;
-            bgCanvas.height = window.innerHeight;
-        }
-
-        function animateBgStars() {
-            if (!bgCtx) return;
-            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-            bgStars.forEach(star => {
-                star.alpha += star.speed;
-                if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
-
-                bgCtx.beginPath();
-                bgCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                bgCtx.fillStyle = `rgba(212, 175, 55, ${Math.abs(star.alpha) * 0.7})`;
-                bgCtx.fill();
-            });
-            requestAnimationFrame(animateBgStars);
-        }
-
-        /* ================= TODAY'S SKY INITIALIZER ================= */
-        function initTodaySky() {
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
-            document.getElementById('today-date-str').innerText = dateStr;
-
-            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-            const mansionIndex = dayOfYear % 28;
-            const currentMansion = CODEX_DATA.filter(d => d.type !== '삼원')[mansionIndex];
-
-            if (currentMansion) {
-                document.getElementById('today-mansion-badge').innerText = currentMansion.name;
-                document.getElementById('today-guardian').innerText = currentMansion.type + " 수호";
-                document.getElementById('today-title').innerText = `${currentMansion.name}의 순행 기운`;
-                document.getElementById('today-desc').innerText = currentMansion.desc;
-            }
-        }
-
-        /* ================= PAGE 2: BIRTH SKY INTERACTIVE CANVAS ================= */
-        let birthCanvas, birthCtx;
-        let activeBirthMansion = null;
-
-        function calculateBirthSky(e) {
-            e.preventDefault();
-            playChime(880, 0.4);
-
-            const name = document.getElementById('user-name').value;
-            const dateVal = document.getElementById('user-date').value;
-            const timeHour = parseInt(document.getElementById('user-time').value);
-
-            if (!dateVal) return;
-
-            const dateObj = new Date(dateVal);
-            const dayOfYear = Math.floor((dateObj - new Date(dateObj.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-            const eclipticDegree = ((dayOfYear + timeHour / 24) / 365.25 * 360).toFixed(1);
-
-            const mansionIndex = Math.floor((eclipticDegree / 360) * 28) % 28;
-            const mansionsOnly = CODEX_DATA.filter(d => d.type !== '삼원');
-            const userMansion = mansionsOnly[mansionIndex];
-
-            activeBirthMansion = {
-                userName: name,
-                birthDate: dateVal,
-                eclipticDegree: eclipticDegree,
-                mansion: userMansion
-            };
-
-            // Hide placeholder & Show Result Card
-            document.getElementById('sky-placeholder').classList.add('hidden');
-            document.getElementById('sky-coords-display').innerText = `황도 경도: ${eclipticDegree}° / ${userMansion.name}`;
-
-            const resCard = document.getElementById('fortune-result-card');
-            resCard.classList.remove('hidden');
-
-            document.getElementById('res-user-tag').innerText = `${name} 님의 탄생 별자리 명조`;
-            document.getElementById('res-mansion-name').innerText = `${userMansion.name} (${userMansion.type})`;
-            document.getElementById('res-guardian').innerText = userMansion.type;
-            document.getElementById('res-animal').innerText = userMansion.guardian;
-            document.getElementById('res-element').innerText = getElementByMansion(userMansion.type);
-            document.getElementById('res-ecliptic-deg').innerText = `${eclipticDegree}°`;
-            document.getElementById('res-fortune-text').innerText = `${name} 님이 태어나신 날의 태양은 ${userMansion.name} 구역을 지나고 있었습니다. ${userMansion.desc} 하늘의 별들은 당신에게 고유한 직관과 강인한 결단력을 부여하였으니, 어떠한 파도 앞에서도 스스로 중심을 지킬 것입니다.`;
-
-            renderBirthSkyCanvas();
-            showToast("탄생 하늘 해석이 완료되었습니다!");
-        }
-
-        function getElementByMansion(type) {
-            if (type === '동청룡') return '목(木) / 성장의 기운';
-            if (type === '남주작') return '화(火) / 열정의 기운';
-            if (type === '서백호') return '금(金) / 결단의 기운';
-            return '수(水) / 지혜의 기운';
-        }
-
-        function renderBirthSkyCanvas() {
-            birthCanvas = document.getElementById('birth-sky-canvas');
-            if (!birthCanvas) return;
-            const rect = birthCanvas.parentElement.getBoundingClientRect();
-            birthCanvas.width = rect.width * window.devicePixelRatio || 500;
-            birthCanvas.height = rect.height * window.devicePixelRatio || 500;
-            birthCtx = birthCanvas.getContext('2d');
-
-            const w = birthCanvas.width;
-            const h = birthCanvas.height;
-            const cx = w / 2;
-            const cy = h / 2;
-            const radius = Math.min(w, h) * 0.38;
-
-            birthCtx.clearRect(0, 0, w, h);
-
-            // Draw Ecliptic Gold Circle
-            birthCtx.beginPath();
-            birthCtx.arc(cx, cy, radius, 0, Math.PI * 2);
-            birthCtx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
-            birthCtx.lineWidth = 2;
-            birthCtx.setLineDash([5, 5]);
-            birthCtx.stroke();
-            birthCtx.setLineDash([]);
-
-            // Draw Inner Circle
-            birthCtx.beginPath();
-            birthCtx.arc(cx, cy, radius * 0.6, 0, Math.PI * 2);
-            birthCtx.strokeStyle = 'rgba(212, 175, 55, 0.15)';
-            birthCtx.stroke();
-
-            // Render 28 Mansion Points along the Ecliptic
-            const mansions = CODEX_DATA.filter(d => d.type !== '삼원');
-            mansions.forEach((m, idx) => {
-                const angle = (idx / 28) * Math.PI * 2 - Math.PI / 2;
-                const x = cx + Math.cos(angle) * radius;
-                const y = cy + Math.sin(angle) * radius;
-
-                const isTarget = activeBirthMansion && activeBirthMansion.mansion.name === m.name;
-
-                // Line to Center
-                birthCtx.beginPath();
-                birthCtx.moveTo(cx, cy);
-                birthCtx.lineTo(x, y);
-                birthCtx.strokeStyle = isTarget ? 'rgba(212, 175, 55, 0.5)' : 'rgba(255, 255, 255, 0.05)';
-                birthCtx.lineWidth = isTarget ? 2 : 1;
-                birthCtx.stroke();
-
-                // Draw Star Node
-                birthCtx.beginPath();
-                birthCtx.arc(x, y, isTarget ? 8 : 4, 0, Math.PI * 2);
-                birthCtx.fillStyle = isTarget ? '#ffffff' : '#d4af37';
-                birthCtx.shadowColor = isTarget ? '#d4af37' : 'transparent';
-                birthCtx.shadowBlur = isTarget ? 20 : 0;
-                birthCtx.fill();
-                birthCtx.shadowBlur = 0;
-
-                // Label Text
-                if (isTarget || idx % 4 === 0) {
-                    const tx = cx + Math.cos(angle) * (radius + 20);
-                    const ty = cy + Math.sin(angle) * (radius + 20);
-                    birthCtx.font = `${isTarget ? 'bold 14px' : '10px'} "Noto Serif KR"`;
-                    birthCtx.fillStyle = isTarget ? '#fef9e7' : 'rgba(212, 175, 55, 0.7)';
-                    birthCtx.textAlign = 'center';
-                    birthCtx.textBaseline = 'middle';
-                    birthCtx.fillText(m.name.split(' ')[0], tx, ty);
-                }
-            });
-
-            // Sun Icon on Active Degree
-            if (activeBirthMansion) {
-                const deg = parseFloat(activeBirthMansion.eclipticDegree);
-                const sunAngle = (deg / 360) * Math.PI * 2 - Math.PI / 2;
-                const sx = cx + Math.cos(sunAngle) * radius;
-                const sy = cy + Math.sin(sunAngle) * radius;
-
-                birthCtx.beginPath();
-                birthCtx.arc(sx, sy, 12, 0, Math.PI * 2);
-                birthCtx.fillStyle = 'rgba(239, 68, 68, 0.8)';
-                birthCtx.shadowColor = '#ef4444';
-                birthCtx.shadowBlur = 15;
-                birthCtx.fill();
-                birthCtx.shadowBlur = 0;
-            }
-        }
-
-        /* ================= PAGE 3: CUSTOM CONSTELLATION STUDIO ================= */
-        let studioCanvas, studioCtx;
-        let studioNodes = []; // {x, y, color, id}
-        let studioEdges = []; // [{fromId, toId}]
-        let studioMode = 'add'; // 'add' or 'connect'
-        let selectedNodeId = null;
-        let studioHistory = [];
-        let showStudioGrid = true;
-
-        function initStudioCanvas() {
-            studioCanvas = document.getElementById('studio-canvas');
-            if (!studioCanvas) return;
-
-            const updateCanvasSize = () => {
-                const rect = studioCanvas.parentElement.getBoundingClientRect();
-                studioCanvas.width = rect.width * window.devicePixelRatio || 600;
-                studioCanvas.height = rect.height * window.devicePixelRatio || 600;
-                redrawStudioCanvas();
-            };
-
-            updateCanvasSize();
-            window.addEventListener('resize', updateCanvasSize);
-
-            // Pointer & Touch Interaction
-            studioCanvas.addEventListener('pointerdown', handleStudioPointerDown);
-        }
-
-        function resizeStudioCanvas() {
-            if (!studioCanvas) initStudioCanvas();
-            else redrawStudioCanvas();
-        }
-
-        function setStudioMode(mode) {
-            studioMode = mode;
-            selectedNodeId = null;
-            playChime(500, 0.1);
-
-            document.querySelectorAll('.studio-tool-btn').forEach(b => {
-                b.classList.remove('bg-gold-500/20', 'border-gold-400', 'text-gold-300');
-                b.classList.add('bg-navy-900', 'border-gold-500/30', 'text-gray-300');
-            });
-
-            const activeBtn = document.getElementById(`btn-mode-${mode}`);
-            if (activeBtn) {
-                activeBtn.classList.remove('bg-navy-900', 'border-gold-500/30', 'text-gray-300');
-                activeBtn.classList.add('bg-gold-500/20', 'border-gold-400', 'text-gold-300');
-            }
-
-            const tip = document.getElementById('studio-status-tip');
-            if (mode === 'add') {
-                tip.innerHTML = `<i class="fa-solid fa-lightbulb text-gold-400 mr-1"></i> [별 찍기 모드] 캔버스를 클릭하여 새로운 별을 생성하세요.`;
-            } else {
-                tip.innerHTML = `<i class="fa-solid fa-link text-gold-400 mr-1"></i> [선 잇기 모드] 첫 번째 별을 클릭한 뒤, 연결할 별을 클릭하세요.`;
-            }
-        }
-
-        function toggleGridStudio() {
-            showStudioGrid = !showStudioGrid;
-            redrawStudioCanvas();
-        }
-
-        function saveStudioState() {
-            studioHistory.push({
-                nodes: JSON.parse(JSON.stringify(studioNodes)),
-                edges: JSON.parse(JSON.stringify(studioEdges))
-            });
-            if (studioHistory.length > 20) studioHistory.shift();
-        }
-
-        function undoStudioStep() {
-            if (studioHistory.length === 0) return;
-            playChime(350, 0.2);
-            const lastState = studioHistory.pop();
-            studioNodes = lastState.nodes;
-            studioEdges = lastState.edges;
-            selectedNodeId = null;
-            redrawStudioCanvas();
-            updateStudioStats();
-        }
-
-        function clearStudioCanvas() {
-            if (studioNodes.length === 0) return;
-            saveStudioState();
-            studioNodes = [];
-            studioEdges = [];
-            selectedNodeId = null;
-            redrawStudioCanvas();
-            updateStudioStats();
-            playChime(250, 0.3);
-            showToast("캔버스가 초기화되었습니다.");
-        }
-
-        function handleStudioPointerDown(e) {
-            const rect = studioCanvas.getBoundingClientRect();
-            const scaleX = studioCanvas.width / rect.width;
-            const scaleY = studioCanvas.height / rect.height;
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
-
-            const clickedNode = studioNodes.find(n => Math.hypot(n.x - x, n.y - y) < 20);
-
-            if (studioMode === 'add') {
-                if (!clickedNode) {
-                    saveStudioState();
-                    const mainColor = document.getElementById('studio-star-color').value || '#d4af37';
-                    const newNode = {
-                        id: Date.now(),
-                        x: x,
-                        y: y,
-                        color: mainColor
-                    };
-                    studioNodes.push(newNode);
-                    playChime(700, 0.15);
-                    redrawStudioCanvas();
-                    updateStudioStats();
-                }
-            } else if (studioMode === 'connect') {
-                if (clickedNode) {
-                    if (!selectedNodeId) {
-                        selectedNodeId = clickedNode.id;
-                        playChime(600, 0.1);
-                    } else if (selectedNodeId !== clickedNode.id) {
-                        saveStudioState();
-                        // Check if edge exists
-                        const exists = studioEdges.some(e => 
-                            (e.fromId === selectedNodeId && e.toId === clickedNode.id) ||
-                            (e.fromId === clickedNode.id && e.toId === selectedNodeId)
-                        );
-                        if (!exists) {
-                            studioEdges.push({ fromId: selectedNodeId, toId: clickedNode.id });
-                            playChime(900, 0.2);
-                        }
-                        selectedNodeId = null;
-                        updateStudioStats();
-                    }
-                    redrawStudioCanvas();
-                } else {
-                    selectedNodeId = null;
-                    redrawStudioCanvas();
-                }
-            }
-        }
-
-        function updateStudioStats() {
-            document.getElementById('studio-node-count').innerText = `별 ${studioNodes.length}개 / 연결 ${studioEdges.length}개`;
-        }
-
-        function redrawStudioCanvas() {
-            if (!studioCtx) return;
-            const w = studioCanvas.width;
-            const h = studioCanvas.height;
-            studioCtx.clearRect(0, 0, w, h);
-
-            // Draw Background Grid
-            if (showStudioGrid) {
-                studioCtx.strokeStyle = 'rgba(212, 175, 55, 0.07)';
-                studioCtx.lineWidth = 1;
-                const gridSize = 40;
-                for (let x = 0; x < w; x += gridSize) {
-                    studioCtx.beginPath();
-                    studioCtx.moveTo(x, 0);
-                    studioCtx.lineTo(x, h);
-                    studioCtx.stroke();
-                }
-                for (let y = 0; y < h; y += gridSize) {
-                    studioCtx.beginPath();
-                    studioCtx.moveTo(0, y);
-                    studioCtx.lineTo(w, y);
-                    studioCtx.stroke();
-                }
-            }
-
-            // Draw Edges
-            studioEdges.forEach(edge => {
-                const n1 = studioNodes.find(n => n.id === edge.fromId);
-                const n2 = studioNodes.find(n => n.id === edge.toId);
-                if (n1 && n2) {
-                    studioCtx.beginPath();
-                    studioCtx.moveTo(n1.x, n1.y);
-                    studioCtx.lineTo(n2.x, n2.y);
-                    studioCtx.strokeStyle = 'rgba(212, 175, 55, 0.6)';
-                    studioCtx.lineWidth = 2;
-                    studioCtx.stroke();
-                }
-            });
-
-            // Draw Nodes
-            studioNodes.forEach(n => {
-                const isSelected = selectedNodeId === n.id;
-
-                studioCtx.beginPath();
-                studioCtx.arc(n.x, n.y, isSelected ? 10 : 6, 0, Math.PI * 2);
-                studioCtx.fillStyle = n.color || '#d4af37';
-                studioCtx.shadowColor = n.color || '#d4af37';
-                studioCtx.shadowBlur = isSelected ? 25 : 12;
-                studioCtx.fill();
-                studioCtx.shadowBlur = 0;
-
-                if (isSelected) {
-                    studioCtx.beginPath();
-                    studioCtx.arc(n.x, n.y, 14, 0, Math.PI * 2);
-                    studioCtx.strokeStyle = '#ffffff';
-                    studioCtx.lineWidth = 1.5;
-                    studioCtx.setLineDash([3, 3]);
-                    studioCtx.stroke();
-                    studioCtx.setLineDash([]);
-                }
-            });
-        }
-
-        function saveCustomConstellation() {
-            const title = document.getElementById('studio-title').value.trim();
-            const desc = document.getElementById('studio-desc').value.trim();
-
-            if (!title) {
-                alert("별자리의 이름을 입력해주세요!");
-                return;
-            }
-            if (studioNodes.length === 0) {
-                alert("최소 1개 이상의 별을 캔버스에 찍어주세요.");
-                return;
-            }
-
-            const thumbnail = studioCanvas.toDataURL("image/png");
-
-            const newConstellation = {
-                id: 'custom_' + Date.now(),
-                title: title,
-                desc: desc || '나만의 우주에 새긴 수호 별자리입니다.',
-                nodesCount: studioNodes.length,
-                edgesCount: studioEdges.length,
-                color: document.getElementById('studio-star-color').value,
-                image: thumbnail,
-                date: new Date().toLocaleDateString('ko-KR')
-            };
-
-            const saved = JSON.parse(localStorage.getItem('hwangdo_custom') || '[]');
-            saved.unshift(newConstellation);
-            localStorage.setItem('hwangdo_custom', JSON.stringify(saved));
-
-            playChime(1000, 0.4);
-            showToast("성좌가 보관함에 안전하게 저장되었습니다!");
-
-            // Reset studio fields
-            document.getElementById('studio-title').value = '';
-            document.getElementById('studio-desc').value = '';
-            clearStudioCanvas();
-        }
-
-        /* ================= PAGE 4: CODEX LOGIC ================= */
-        let currentCodexCat = 'all';
-
-        function renderCodex() {
-            const grid = document.getElementById('codex-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            const searchTerm = (document.getElementById('codex-search')?.value || '').toLowerCase();
-
-            const filtered = CODEX_DATA.filter(item => {
-                const matchesCat = currentCodexCat === 'all' || item.type === currentCodexCat;
-                const matchesSearch = item.name.toLowerCase().includes(searchTerm) ||
-                                      item.guardian.toLowerCase().includes(searchTerm) ||
-                                      item.desc.toLowerCase().includes(searchTerm);
-                return matchesCat && matchesSearch;
-            });
-
-            filtered.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "glass-card p-5 rounded-xl border border-gold-500/20 hover:border-gold-400 transition cursor-pointer flex flex-col justify-between space-y-3";
-                card.onclick = () => openCodexModal(item);
-
-                card.innerHTML = `
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gold-500/10 text-gold-300 border border-gold-500/30">${item.type}</span>
-                            <span class="text-[11px] font-mono text-gray-400">${item.stars}</span>
-                        </div>
-                        <h4 class="font-serif font-bold text-lg text-white">${item.name}</h4>
-                        <p class="text-xs text-gold-400/90 font-medium"><i class="fa-solid fa-shield-halved mr-1"></i>${item.guardian}</p>
-                        <p class="text-xs text-gray-300 line-clamp-2 leading-relaxed">${item.desc}</p>
-                    </div>
-                    <div class="pt-2 border-t border-gold-500/10 text-right">
-                        <span class="text-[11px] text-gold-300 font-semibold hover:underline">상세 보기 <i class="fa-solid fa-chevron-right text-[9px]"></i></span>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function setCodexCategory(cat) {
-            currentCodexCat = cat;
-            document.querySelectorAll('.codex-cat-btn').forEach(btn => {
-                if (btn.getAttribute('data-cat') === cat) {
-                    btn.className = "codex-cat-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gold-500/20 text-gold-300 border border-gold-500/40";
-                } else {
-                    btn.className = "codex-cat-btn px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-gold-300 bg-navy-900 border border-gold-500/20";
-                }
-            });
-            renderCodex();
-        }
-
-        function filterCodex() {
-            renderCodex();
-        }
-
-        function openCodexModal(item) {
-            playChime(750, 0.2);
-            const modalContent = document.getElementById('modal-content');
-            modalContent.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex items-center gap-2">
-                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-gold-500/20 text-gold-300 border border-gold-500/40">${item.type}</span>
-                        <span class="text-xs font-mono text-gray-400">${item.stars}</span>
-                    </div>
-                    <h3 class="font-serif text-2xl font-bold text-gold-300">${item.name}</h3>
-                    <div class="p-3 bg-navy-900/80 rounded-xl border border-gold-500/20">
-                        <span class="text-xs text-gray-400 block mb-1">상징 수호 영역</span>
-                        <span class="font-serif text-sm text-gold-400 font-bold">${item.guardian}</span>
-                    </div>
-                    <p class="text-sm text-gray-300 leading-relaxed font-sans">${item.desc}</p>
-                </div>
-            `;
-            document.getElementById('info-modal').classList.remove('hidden');
-        }
-
-        /* ================= PAGE 5: VAULT SYSTEM & STORAGE ================= */
-        function switchVaultSubTab(tab) {
-            document.getElementById('vault-readings-section').classList.add('hidden');
-            document.getElementById('vault-custom-section').classList.add('hidden');
-            document.getElementById('vault-notes-section').classList.add('hidden');
-
-            ['readings', 'custom', 'notes'].forEach(t => {
-                const btn = document.getElementById(`vtab-${t}`);
-                btn.className = "px-4 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-gold-300 bg-navy-900 border border-gold-500/20";
-            });
-
-            const activeBtn = document.getElementById(`vtab-${tab}`);
-            activeBtn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-gold-500/20 text-gold-300 border border-gold-500/40";
-
-            if (tab === 'readings') {
-                document.getElementById('vault-readings-section').classList.remove('hidden');
-            } else if (tab === 'custom') {
-                document.getElementById('vault-custom-section').classList.remove('hidden');
-            } else if (tab === 'notes') {
-                document.getElementById('vault-notes-section').classList.remove('hidden');
-            }
-        }
-
-        function saveBirthReading() {
-            if (!activeBirthMansion) return;
-            const saved = JSON.parse(localStorage.getItem('hwangdo_readings') || '[]');
-            const newItem = {
-                id: 'birth_' + Date.now(),
-                userName: activeBirthMansion.userName,
-                date: activeBirthMansion.birthDate,
-                mansionName: activeBirthMansion.mansion.name,
-                type: activeBirthMansion.mansion.type,
-                guardian: activeBirthMansion.mansion.guardian,
-                degree: activeBirthMansion.eclipticDegree,
-                desc: activeBirthMansion.mansion.desc
-            };
-            saved.unshift(newItem);
-            localStorage.setItem('hwangdo_readings', JSON.stringify(saved));
-            playChime(950, 0.3);
-            showToast("탄생 하늘 해석이 보관함에 저장되었습니다.");
-        }
-
-        function renderSavedReadings() {
-            const container = document.getElementById('saved-readings-list');
-            if (!container) return;
-            const items = JSON.parse(localStorage.getItem('hwangdo_readings') || '[]');
-
-            if (items.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-12 glass-card rounded-2xl text-gray-400 text-xs">저장된 탄생 하늘 해석이 없습니다. '탄생 하늘 & 운세' 탭에서 운세를 측정하고 저장해보세요.</div>`;
-                return;
-            }
-
-            container.innerHTML = '';
-            items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "glass-card p-5 rounded-xl space-y-3 relative";
-                card.innerHTML = `
-                    <button onclick="deleteSavedReading('${item.id}')" class="absolute top-4 right-4 text-xs text-gray-500 hover:text-red-400">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                    <div class="flex items-center gap-2">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gold-500/20 text-gold-300 border border-gold-500/40">${item.mansionName}</span>
-                        <span class="text-xs text-gray-400">${item.userName} 님</span>
-                    </div>
-                    <h4 class="font-serif font-bold text-lg text-white">${item.mansionName} (${item.type})</h4>
-                    <p class="text-xs text-gray-300 leading-relaxed">${item.desc}</p>
-                    <div class="text-[10px] text-gray-400 pt-2 border-t border-gold-500/10 flex justify-between">
-                        <span>생년월일: ${item.date}</span>
-                        <span>황도 경도: ${item.degree}°</span>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function deleteSavedReading(id) {
-            let items = JSON.parse(localStorage.getItem('hwangdo_readings') || '[]');
-            items = items.filter(i => i.id !== id);
-            localStorage.setItem('hwangdo_readings', JSON.stringify(items));
-            renderSavedReadings();
-            showToast("삭제되었습니다.");
-        }
-
-        function renderSavedCustomConstellations() {
-            const container = document.getElementById('saved-custom-list');
-            if (!container) return;
-            const items = JSON.parse(localStorage.getItem('hwangdo_custom') || '[]');
-
-            if (items.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-12 glass-card rounded-2xl text-gray-400 text-xs">저장된 커스텀 별자리가 없습니다. '별자리 만들기' 공방에서 나만의 별자리를 그려보세요!</div>`;
-                return;
-            }
-
-            container.innerHTML = '';
-            items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "glass-card p-4 rounded-xl space-y-3 relative flex flex-col justify-between";
-                card.innerHTML = `
-                    <button onclick="deleteCustomConstellation('${item.id}')" class="absolute top-3 right-3 z-10 w-7 h-7 rounded-full bg-navy-900/80 text-xs text-gray-400 hover:text-red-400 flex items-center justify-center border border-gold-500/20">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                    <div class="space-y-3">
-                        <div class="w-full aspect-square rounded-lg bg-navy-900 border border-gold-500/20 overflow-hidden">
-                            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-contain">
-                        </div>
-                        <h4 class="font-serif font-bold text-base text-gold-300">${item.title}</h4>
-                        <p class="text-xs text-gray-300 line-clamp-2">${item.desc}</p>
-                    </div>
-                    <div class="pt-2 border-t border-gold-500/10 text-[10px] text-gray-400 flex justify-between">
-                        <span>별 ${item.nodesCount}개 / 선 ${item.edgesCount}개</span>
-                        <span>${item.date}</span>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function deleteCustomConstellation(id) {
-            let items = JSON.parse(localStorage.getItem('hwangdo_custom') || '[]');
-            items = items.filter(i => i.id !== id);
-            localStorage.setItem('hwangdo_custom', JSON.stringify(items));
-            renderSavedCustomConstellations();
-            showToast("성좌가 삭제되었습니다.");
-        }
-
-        function saveSkyNote() {
-            const input = document.getElementById('note-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const notes = JSON.parse(localStorage.getItem('hwangdo_notes') || '[]');
-            notes.unshift({
-                id: 'note_' + Date.now(),
-                text: text,
-                date: new Date().toLocaleString('ko-KR')
-            });
-            localStorage.setItem('hwangdo_notes', JSON.stringify(notes));
-
-            input.value = '';
-            renderSkyNotes();
-            playChime(800, 0.2);
-            showToast("일기가 저장되었습니다.");
-        }
-
-        function renderSkyNotes() {
-            const container = document.getElementById('sky-notes-list');
-            if (!container) return;
-            const notes = JSON.parse(localStorage.getItem('hwangdo_notes') || '[]');
-
-            if (notes.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 text-gray-400 text-xs">작성된 하늘 일기가 없습니다.</div>`;
-                return;
-            }
-
-            container.innerHTML = '';
-            notes.forEach(n => {
-                const card = document.createElement('div');
-                card.className = "glass-card p-4 rounded-xl space-y-2 relative";
-                card.innerHTML = `
-                    <button onclick="deleteSkyNote('${n.id}')" class="absolute top-3 right-3 text-xs text-gray-500 hover:text-red-400">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                    <p class="text-sm text-gray-200 leading-relaxed font-sans">${n.text}</p>
-                    <span class="text-[10px] text-gray-400 block">${n.date}</span>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function deleteSkyNote(id) {
-            let notes = JSON.parse(localStorage.getItem('hwangdo_notes') || '[]');
-            notes = notes.filter(n => n.id !== id);
-            localStorage.setItem('hwangdo_notes', JSON.stringify(notes));
-            renderSkyNotes();
-        }
-
-        /* ================= MODAL & TOAST UTILS ================= */
-        function closeModal() {
-            document.getElementById('info-modal').classList.add('hidden');
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').innerText = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        /* ================= APPLICATION INITIALIZATION ================= */
-        window.onload = function() {
-            initBgStars();
-            initTodaySky();
-            renderCodex();
-            initStudioCanvas();
-
-            // Handle window resize for dynamic canvas redraws
-            window.addEventListener('resize', () => {
-                if (activeBirthMansion) renderBirthSkyCanvas();
-            });
-        };
-    </script>
+<body class="min-h-screen flex flex-col relative selection:bg-gold-500 selection:text-navy-900">
+<div class="stars-bg"></div><canvas id="bg-stars-canvas" class="fixed inset-0 w-full h-full pointer-events-none" style="z-index:-1"></canvas>
+<header class="sticky top-0 z-50 glass-card border-b border-gold-500/20 px-4 lg:px-8 py-3">
+<div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')"><div class="w-10 h-10 rounded-full border border-gold-500/50 flex items-center justify-center bg-gold-500/10"><span class="font-serif text-gold-400 text-xl">黃</span></div><h1 class="font-serif font-bold text-xl tracking-wider text-gold-300">황도 <span class="text-xs font-sans text-gray-400 font-normal">黃道: 당신의 하늘을 읽어드립니다</span></h1></div>
+<nav class="flex flex-wrap items-center gap-1">
+<button onclick="switchTab('home')" id="nav-home" class="nav-btn nav-active px-3 py-2 rounded-lg text-sm">HOME</button>
+<button onclick="switchTab('birth')" id="nav-birth" class="nav-btn px-3 py-2 rounded-lg text-sm">당신의 하늘</button>
+<button onclick="switchTab('studio')" id="nav-studio" class="nav-btn px-3 py-2 rounded-lg text-sm">별자리 만들기</button>
+<button onclick="switchTab('codex')" id="nav-codex" class="nav-btn px-3 py-2 rounded-lg text-sm">별 도감</button>
+<button onclick="switchTab('vault')" id="nav-vault" class="nav-btn px-3 py-2 rounded-lg text-sm">다이어리</button>
+</nav>
+<button onclick="toggleAudio()" class="px-3 py-2 rounded-full border border-gold-500/30 text-xs text-gold-300"><i id="sound-icon" class="fa-solid fa-volume-xmark"></i> <span id="sound-text">음향 켜기</span></button>
+</div></header>
+<main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 lg:p-8">
+<section id="page-home" class="tab-content space-y-10 py-4">
+<div class="glass-card rounded-2xl p-6 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="w-full max-w-2xl space-y-5">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-300 text-xs"><i class="fa-solid fa-sparkles"></i> 천상열차분야지도 기반 하늘 해석</div>
+<h2 class="font-serif font-bold leading-tight gold-gradient-text text-3xl md:text-5xl">당신이 태어난 날,<br>하늘이 품었던 신비로운 별의 이야기</h2>
+<p class="text-gray-300 text-sm md:text-base leading-relaxed">우리 전통 천문학의 28수와 삼원에서 영감을 얻어, 탄생 하늘을 살펴보고 나만의 별자리를 만들어보세요.</p>
+<div class="flex flex-wrap gap-3"><button onclick="switchTab('birth')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-navy-900 font-bold"><i class="fa-solid fa-compass-drafting mr-2"></i>나의 하늘 보기</button><button onclick="switchTab('studio')" class="px-6 py-3 rounded-xl border border-gold-500/40 text-gold-300">나만의 별자리 그리기</button></div>
+</div>
+<div class="relative w-56 h-56 md:w-72 md:h-72 flex-shrink-0 flex items-center justify-center"><div class="absolute inset-0 rounded-full border border-gold-500/30 animate-spin" style="animation-duration:40s"></div><div class="absolute inset-5 rounded-full border border-dashed border-gold-500/50 animate-spin" style="animation-duration:25s;animation-direction:reverse"></div><div class="w-32 h-32 rounded-full bg-gold-500/10 flex items-center justify-center border border-gold-400/50"><i class="fa-solid fa-dharmachakra text-6xl text-gold-400"></i></div></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+<div class="glass-card p-6 rounded-xl"><i class="fa-solid fa-draw-polygon text-2xl text-gold-400"></i><h3 class="font-serif text-gold-300 text-lg mt-3">28수</h3><p class="text-xs text-gray-400 mt-2">동서남북 사방을 수호하는 별자리 구역과 사신의 상징.</p></div>
+<div class="glass-card p-6 rounded-xl"><i class="fa-solid fa-ring text-2xl text-gold-400"></i><h3 class="font-serif text-gold-300 text-lg mt-3">삼원</h3><p class="text-xs text-gray-400 mt-2">자미원, 태미원, 천시원으로 이루어진 하늘의 세 영역.</p></div>
+<div class="glass-card p-6 rounded-xl"><i class="fa-solid fa-palette text-2xl text-gold-400"></i><h3 class="font-serif text-gold-300 text-lg mt-3">성좌 공방</h3><p class="text-xs text-gray-400 mt-2">별을 찍고 선으로 이어 나만의 별자리를 창조하세요.</p></div>
+</div>
+<div class="glass-card p-6 md:p-8 rounded-2xl"><div class="flex items-center justify-between border-b border-gold-500/20 pb-4"><div><h3 class="font-serif text-xl font-bold text-gold-300"><i class="fa-solid fa-sun mr-2"></i>오늘의 하늘 기운</h3><p class="text-xs text-gray-400 mt-1">오늘의 날짜와 상징 메시지</p></div><span id="today-date-str" class="text-xs text-gold-400"></span></div><div class="mt-5 p-5 rounded-xl bg-navy-900/60 border border-gold-500/20"><span id="today-mansion-badge" class="text-gold-300 font-bold">각수 (角宿)</span><h4 id="today-title" class="font-serif font-bold text-lg mt-2">새로운 시작과 성장의 기운</h4><p id="today-desc" class="text-sm text-gray-300 mt-2">오늘의 하늘 이야기를 살펴보세요.</p><button onclick="switchTab('birth')" class="mt-4 px-5 py-2 rounded-lg bg-gold-500/20 text-gold-300 border border-gold-500/40 text-sm">나의 하늘 보기 →</button></div></div>
+</section>
+
+<section id="page-birth" class="tab-content hidden space-y-8 py-4">
+<div class="text-center space-y-2"><h2 class="font-serif text-3xl font-bold gold-gradient-text">탄생 하늘 & 운세</h2><p class="text-xs text-gray-400">태어난 날짜와 시각을 바탕으로 28수 중 하나를 살펴봅니다.</p></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<div class="lg:col-span-4 glass-card p-6 rounded-2xl space-y-5 h-fit"><h3 class="font-serif font-bold text-lg text-gold-300 border-b border-gold-500/20 pb-3">명조(命造) 정보 입력</h3>
+<form id="birth-form" onsubmit="calculateBirthSky(event)" class="space-y-4">
+<div><label class="block text-xs text-gray-300 mb-1">이름 (선택)</label><input id="user-name" type="text" maxlength="30" placeholder="이름 또는 별칭" class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white"></div>
+<div><label class="block text-xs text-gray-300 mb-1">생년월일</label><input type="date" id="user-date" required class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white"></div>
+<div class="grid grid-cols-2 gap-3"><div><label class="block text-xs text-gray-300 mb-1">태어난 시</label><select id="user-time" class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white"><option value="0">자시 (23~01)</option><option value="2">축시 (01~03)</option><option value="4">인시 (03~05)</option><option value="6">묘시 (05~07)</option><option value="8" selected>진시 (07~09)</option><option value="10">사시 (09~11)</option><option value="12">오시 (11~13)</option><option value="14">미시 (13~15)</option><option value="16">신시 (15~17)</option><option value="18">유시 (17~19)</option><option value="20">술시 (19~21)</option><option value="22">해시 (21~23)</option></select></div><div><label class="block text-xs text-gray-300 mb-1">성별</label><select id="user-gender" class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white"><option value="양(陽)">남성 (陽)</option><option value="음(陰)">여성 (陰)</option></select></div></div>
+<button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-navy-900 font-bold"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>나의 하늘 펼치기</button></form></div>
+<div class="lg:col-span-8 space-y-6"><div class="glass-card p-4 rounded-2xl"><div class="flex justify-between mb-3 text-xs text-gold-300"><span>탄생 성도</span><span id="sky-coords-display">황도 0.0° / 28수 미측정</span></div><div class="relative w-full aspect-square max-w-[500px] mx-auto bg-navy-900/80 rounded-xl border border-gold-500/30 overflow-hidden"><canvas id="birth-sky-canvas" class="w-full h-full"></canvas><div id="sky-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center bg-navy-900/90 space-y-3"><i class="fa-solid fa-dharmachakra text-5xl text-gold-500/40"></i><p class="text-sm text-gray-300">왼쪽에서 정보를 입력하고<br><span class="text-gold-400">‘나의 하늘 펼치기’</span>를 눌러주세요.</p></div></div><p class="text-xs text-gray-400 mt-3 text-center">※ 이 결과는 전통 천문 사상을 활용한 상징적 해석이며 과학적 운명 예측은 아닙니다.</p></div>
+<div id="fortune-result-card" class="glass-card p-6 rounded-2xl space-y-5 hidden"><div class="flex flex-wrap items-center justify-between gap-3 border-b border-gold-500/20 pb-4"><div><span id="res-user-tag" class="text-xs text-gold-400">방문자 님의 탄생 성좌</span><h3 id="res-mansion-name" class="font-serif text-2xl font-bold mt-1">각수 (角宿)</h3></div><button onclick="saveBirthReading()" class="px-4 py-2 bg-gold-500/20 border border-gold-500/40 rounded-lg text-xs text-gold-300">보관함에 저장</button></div><div class="grid grid-cols-2 sm:grid-cols-4 gap-3"><div class="bg-navy-900/60 p-3 rounded-lg text-center"><span class="text-[10px] text-gray-400 block">수호 신수</span><b id="res-guardian" class="text-sm text-gold-300">동청룡</b></div><div class="bg-navy-900/60 p-3 rounded-lg text-center"><span class="text-[10px] text-gray-400 block">상징 동물</span><b id="res-animal" class="text-sm text-gold-300">용</b></div><div class="bg-navy-900/60 p-3 rounded-lg text-center"><span class="text-[10px] text-gray-400 block">오행 속성</span><b id="res-element" class="text-sm text-gold-300">목(木)</b></div><div class="bg-navy-900/60 p-3 rounded-lg text-center"><span class="text-[10px] text-gray-400 block">황도 경도</span><b id="res-ecliptic-deg" class="text-sm text-gold-300">0°</b></div></div><div class="bg-navy-900/40 p-4 rounded-xl text-sm text-gray-300 leading-relaxed"><h4 class="font-serif font-bold text-gold-300 mb-2">하늘의 괘상 및 총운</h4><p id="res-fortune-text"></p></div><div class="rounded-xl border border-gold-500/30 bg-gradient-to-br from-gold-500/10 to-purple-900/20 p-4 space-y-3"><div class="flex items-center gap-2"><span class="text-xl">✦</span><h4 class="font-serif font-bold text-gold-300">오늘의 별점 운세</h4><span class="text-[10px] text-gray-400">가볍게 즐기는 오늘의 테마</span></div><p id="res-fun-fortune" class="text-sm leading-relaxed text-gray-200"></p><div class="grid grid-cols-3 gap-2"><div class="rounded-lg bg-navy-900/70 p-3 text-center"><span class="block text-[10px] text-gray-400">행운 숫자</span><b id="res-lucky-number" class="block text-lg text-gold-300 mt-1">7</b></div><div class="rounded-lg bg-navy-900/70 p-3 text-center"><span class="block text-[10px] text-gray-400">행운 색</span><b id="res-lucky-color" class="block text-sm text-gold-300 mt-2">금빛</b></div><div class="rounded-lg bg-navy-900/70 p-3 text-center"><span class="block text-[10px] text-gray-400">추천 행동</span><b id="res-lucky-action" class="block text-xs text-gold-300 mt-2">산책하기</b></div></div><p class="text-[10px] text-gray-500">※ 재미를 위한 상징 콘텐츠이며 실제 미래나 결과를 예측하지 않습니다.</p></div></div></div></div>
+</section>
+
+<section id="page-studio" class="tab-content hidden space-y-6 py-4">
+<div class="text-center space-y-2"><h2 class="font-serif text-3xl font-bold gold-gradient-text">나만의 별자리 공방</h2><p class="text-xs text-gray-400">별을 찍고 두 별을 차례로 눌러 선으로 연결하세요.</p></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<div class="lg:col-span-4 glass-card p-6 rounded-2xl space-y-5"><h3 class="font-serif font-bold text-lg text-gold-300 border-b border-gold-500/20 pb-3 flex justify-between"><span>별자리 설정</span><span id="studio-node-count" class="text-xs text-gray-400 font-sans font-normal">별 0개 / 연결 0개</span></h3>
+<div><label class="block text-xs text-gray-300 mb-2">작업 도구</label><div class="grid grid-cols-2 gap-2"><button onclick="setStudioMode('add')" id="btn-mode-add" class="studio-tool-btn tool-active px-3 py-2 rounded-lg border text-xs">＋ 별 찍기</button><button onclick="setStudioMode('connect')" id="btn-mode-connect" class="studio-tool-btn px-3 py-2 rounded-lg border text-xs">선 잇기</button></div></div>
+<div><label class="block text-xs text-gray-300 mb-1">주요 별 색상</label><input type="color" id="studio-star-color" value="#d4af37" class="w-12 h-10 rounded cursor-pointer bg-transparent" onchange="recolorStudioStars()"></div>
+<div><label class="block text-xs text-gray-300 mb-1">별자리 이름</label><input id="studio-title" type="text" placeholder="예: 수호하는 여우자리" class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white"></div>
+<div><label class="block text-xs text-gray-300 mb-1">전설 & 수호의 의미</label><textarea id="studio-desc" rows="3" placeholder="별자리에 담긴 이야기를 기록하세요." class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white"></textarea></div>
+<div class="grid grid-cols-2 gap-2"><button onclick="undoStudioStep()" class="py-2 rounded-lg bg-navy-900 border border-gold-500/30 text-xs">되돌리기</button><button onclick="clearStudioCanvas()" class="py-2 rounded-lg bg-navy-900 border border-red-500/30 text-xs text-red-300">전체 지우기</button></div>
+<button onclick="saveCustomConstellation()" class="w-full py-3 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-navy-900 font-bold">내 별자리 보관함에 저장하기</button>
+</div>
+<div class="lg:col-span-8 glass-card p-4 rounded-2xl"><div class="flex items-center justify-between gap-2 mb-3"><span id="studio-status-tip" class="text-xs text-gold-300">[별 찍기 모드] 캔버스를 눌러 별을 추가하세요.</span><button onclick="toggleGridStudio()" class="text-xs text-gray-400">격자 토글</button></div><div id="studio-canvas-wrap" class="relative w-full aspect-square max-w-[600px] mx-auto bg-navy-900 rounded-xl border border-gold-500/40 overflow-hidden"><canvas id="studio-canvas" class="w-full h-full cursor-crosshair"></canvas></div><div class="text-xs text-gray-400 mt-3">선 잇기 모드에서 별 두 개를 차례로 선택하면 연결됩니다.</div></div>
+</div></section>
+
+<section id="page-codex" class="tab-content hidden space-y-6 py-4"><div class="text-center"><h2 class="font-serif text-3xl font-bold gold-gradient-text">28수 & 삼원 백과 도감</h2><p class="text-xs text-gray-400 mt-2">별자리 구역과 상징을 탐색하세요.</p></div><div class="glass-card p-4 rounded-xl max-w-3xl mx-auto"><input id="codex-search" oninput="renderCodex()" placeholder="성좌 이름, 수호동물 검색..." class="w-full bg-navy-900 border border-gold-500/30 rounded-lg px-3 py-2 text-sm text-white"></div><div id="codex-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div></section>
+
+<section id="page-vault" class="tab-content hidden space-y-6 py-4"><div class="text-center"><h2 class="font-serif text-3xl font-bold gold-gradient-text">성좌 다이어리</h2><p class="text-xs text-gray-400 mt-2">저장된 탄생 하늘과 별자리, 하늘 일기를 확인하세요.</p></div><div class="flex flex-wrap justify-center gap-2"><button onclick="switchVaultSubTab('readings')" id="vtab-readings" class="vault-btn vault-active">저장된 탄생 운세</button><button onclick="switchVaultSubTab('custom')" id="vtab-custom" class="vault-btn">내가 만든 별자리</button><button onclick="switchVaultSubTab('notes')" id="vtab-notes" class="vault-btn">하늘 일기장</button></div>
+<div id="vault-readings-section"><div id="saved-readings-list" class="grid md:grid-cols-2 gap-4"></div></div><div id="vault-custom-section" class="hidden"><div id="saved-custom-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div></div><div id="vault-notes-section" class="hidden max-w-3xl mx-auto space-y-4"><div class="glass-card p-5 rounded-xl space-y-3"><label for="note-input" class="block text-sm font-bold text-gold-300">오늘의 하늘 일기</label><textarea id="note-input" rows="3" maxlength="5000" placeholder="오늘 본 하늘, 기억하고 싶은 순간을 기록하세요." class="w-full bg-navy-900 border border-gold-500/30 rounded-lg p-3 text-sm text-white"></textarea><div><label for="note-photo-input" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-navy-900 border border-gold-500/30 text-sm text-gold-300 cursor-pointer"><i class="fa-solid fa-camera"></i> 오늘 찍은 사진 추가</label><input id="note-photo-input" type="file" accept="image/*" class="hidden" onchange="previewNotePhoto(event)"><p class="text-[11px] text-gray-400 mt-2">사진은 저장 공간을 아끼기 위해 크기를 줄여 이 브라우저에 보관됩니다.</p></div><div id="note-photo-preview-wrap" class="hidden relative max-w-sm"><img id="note-photo-preview" alt="일기 사진 미리보기" class="w-full max-h-64 object-contain rounded-lg border border-gold-500/20 bg-navy-900"><button type="button" onclick="clearNotePhoto()" class="mt-2 text-xs text-red-300">사진 제거</button></div><button onclick="saveSkyNote()" class="px-5 py-2 rounded-lg bg-gold-500/20 border border-gold-500/40 text-gold-300 text-sm"><i class="fa-solid fa-bookmark mr-1"></i> 일기 저장</button></div><div id="sky-notes-list" class="space-y-3"></div></div>
+</section>
+</main>
+<div id="toast" class="fixed bottom-5 right-5 z-50 bg-gold-500 text-navy-900 font-bold px-5 py-3 rounded-xl shadow-2xl opacity-0 pointer-events-none transition-opacity"><span id="toast-msg">저장되었습니다.</span></div>
+<footer class="glass-card border-t border-gold-500/20 py-6 px-4 mt-8 text-center text-xs text-gray-400 space-y-2"><p class="font-serif text-gold-300/80">황도(黃道) : 당신의 하늘을 읽어드립니다</p><p>전통 천문 사상을 현대적으로 재해석한 대화형 웹 애플리케이션입니다.</p><p>© 2026 HWANGDO Celestial Studio</p></footer>
+<script>
+const CODEX_DATA=[
+{id:'ziwei',type:'삼원',name:'자미원 (紫微垣)',guardian:'천자의 궁궐',desc:'하늘의 중심이자 제왕과 나라의 안녕을 상징하는 영역.',stars:'북극성 등'},
+{id:'taiwei',type:'삼원',name:'태미원 (太微垣)',guardian:'조정과 대신',desc:'하늘의 정부와 신하들을 상징하며 지혜와 덕망을 뜻합니다.',stars:'오제좌 등'},
+{id:'tianshi',type:'삼원',name:'천시원 (天市垣)',guardian:'시장의 저자',desc:'하늘의 백성과 풍요로운 거래, 번영을 상징합니다.',stars:'시루 등'},
+{id:'m1',type:'동청룡',name:'각수 (角宿)',guardian:'청룡의 뿔',desc:'만물의 만개와 새로운 생명의 시작을 상징합니다.',stars:'Spica 외'},
+{id:'m2',type:'동청룡',name:'항수 (亢宿)',guardian:'청룡의 목',desc:'흔들리지 않는 신념과 강직한 기개를 뜻합니다.',stars:'Virginis'},
+{id:'m3',type:'동청룡',name:'저수 (氐宿)',guardian:'청룡의 가슴',desc:'굳건한 뿌리와 집안의 안락함을 상징합니다.',stars:'Librae'},
+{id:'m4',type:'동청룡',name:'방수 (房宿)',guardian:'청룡의 배',desc:'덕과 명예, 풍요를 상징합니다.',stars:'Scorpii'},
+{id:'m5',type:'동청룡',name:'심수 (心宿)',guardian:'청룡의 심장',desc:'열정과 예술적 감수성을 상징합니다.',stars:'Antares 외'},
+{id:'m6',type:'동청룡',name:'미수 (尾宿)',guardian:'청룡의 꼬리',desc:'완성도와 지속적인 지구력을 뜻합니다.',stars:'Scorpii'},
+{id:'m7',type:'동청룡',name:'기수 (箕宿)',guardian:'청룡의 바람키',desc:'유연하고 자유로운 변화를 상징합니다.',stars:'Sagittarii'},
+{id:'m8',type:'북현무',name:'두수 (斗宿)',guardian:'현무의 머리',desc:'수명과 지혜를 상징하는 별자리입니다.',stars:'Sagittarii'},
+{id:'m9',type:'북현무',name:'우수 (牛宿)',guardian:'견우성',desc:'성실함과 끈기, 진실된 인연을 뜻합니다.',stars:'Capricorni'},
+{id:'m10',type:'북현무',name:'여수 (女宿)',guardian:'직녀성',desc:'예술적 완성도와 미적 직관을 상징합니다.',stars:'Aquarii'},
+{id:'m11',type:'북현무',name:'허수 (虛宿)',guardian:'비움',desc:'욕망을 비우고 평정심에 이르는 상징입니다.',stars:'Aquarii'},
+{id:'m12',type:'북현무',name:'위수 (危宿)',guardian:'지붕',desc:'위험을 감지하는 통찰과 경계심을 뜻합니다.',stars:'Pegasi'},
+{id:'m13',type:'북현무',name:'실수 (室宿)',guardian:'집',desc:'번영과 안락한 가정을 지키는 상징입니다.',stars:'Pegasi'},
+{id:'m14',type:'북현무',name:'벽수 (壁宿)',guardian:'벽',desc:'학문과 지혜를 감싸는 배움의 기운입니다.',stars:'Pegasi'},
+{id:'m15',type:'서백호',name:'규수 (奎宿)',guardian:'백호의 발톱',desc:'문장력과 예리한 직관을 상징합니다.',stars:'Andromedae'},
+{id:'m16',type:'서백호',name:'루수 (婁宿)',guardian:'백호의 목',desc:'인재를 모으고 이끄는 리더십을 뜻합니다.',stars:'Arietis'},
+{id:'m17',type:'서백호',name:'위수 (胃宿)',guardian:'백호의 창고',desc:'재물과 결실, 포용을 상징합니다.',stars:'Arietis'},
+{id:'m18',type:'서백호',name:'묘수 (昴宿)',guardian:'묘성',desc:'하늘의 소리를 전하는 신비로운 직관을 상징합니다.',stars:'Pleiades'},
+{id:'m19',type:'서백호',name:'필수 (畢宿)',guardian:'사냥그물',desc:'시련을 이겨내고 기회를 잡는 집념을 뜻합니다.',stars:'Hyades'},
+{id:'m20',type:'서백호',name:'자수 (觜宿)',guardian:'부리',desc:'정교한 분석력과 논리적 판단을 상징합니다.',stars:'Orionis'},
+{id:'m21',type:'서백호',name:'삼수 (參宿)',guardian:'장군',desc:'용맹한 도전과 추진력을 상징합니다.',stars:'Orion'},
+{id:'m22',type:'남주작',name:'정수 (井宿)',guardian:'주작의 우물',desc:'샘물처럼 끊임없이 솟는 창의성을 뜻합니다.',stars:'Geminorum'},
+{id:'m23',type:'남주작',name:'귀수 (鬼宿)',guardian:'주작의 눈',desc:'보이지 않는 가치를 꿰뚫어 보는 통찰을 상징합니다.',stars:'Cancri'},
+{id:'m24',type:'남주작',name:'류수 (柳宿)',guardian:'주작의 부리',desc:'언변과 뛰어난 소통 능력을 뜻합니다.',stars:'Hydrae'},
+{id:'m25',type:'남주작',name:'성수 (星宿)',guardian:'주작의 목',desc:'예술성과 밝은 존재감을 상징합니다.',stars:'Alphard'},
+{id:'m26',type:'남주작',name:'장수 (張宿)',guardian:'주작의 날개',desc:'포용력과 큰 뜻을 품는 기운입니다.',stars:'Crateris'},
+{id:'m27',type:'남주작',name:'익수 (翼宿)',guardian:'주작의 깃털',desc:'명예와 널리 이름을 알리는 기운을 뜻합니다.',stars:'Corvi'},
+{id:'m28',type:'남주작',name:'진수 (軫宿)',guardian:'주작의 수레',desc:'유연한 이동성과 여행의 안전을 상징합니다.',stars:'Corvi'}
+];
+let audioCtx=null,audioOn=false;
+function toggleAudio(){audioOn=!audioOn;document.getElementById('sound-icon').className=audioOn?'fa-solid fa-volume-high':'fa-solid fa-volume-xmark';document.getElementById('sound-text').textContent=audioOn?'음향 끄기':'음향 켜기';if(audioOn)playChime(523,.25)}
+function playChime(f=440,d=.15){if(!audioOn)return;try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=f;g.gain.setValueAtTime(.08,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}catch(e){}}
+function switchTab(id){document.querySelectorAll('.tab-content').forEach(x=>x.classList.add('hidden'));document.getElementById('page-'+id).classList.remove('hidden');document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('nav-active'));document.getElementById('nav-'+id).classList.add('nav-active');if(id==='studio')requestAnimationFrame(resizeStudioCanvas);if(id==='vault'){renderSavedReadings();renderSavedCustomConstellations();renderSkyNotes()}}
+function showToast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.remove('opacity-0');t.classList.add('opacity-100');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>{t.classList.add('opacity-0');t.classList.remove('opacity-100')},2600)}
+function initBgStars(){const c=document.getElementById('bg-stars-canvas'),ctx=c.getContext('2d');let stars=[];function resize(){c.width=innerWidth*devicePixelRatio;c.height=innerHeight*devicePixelRatio;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);stars=Array.from({length:130},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.4+.3,a:Math.random(),s:Math.random()*.008+.002}))}function draw(){ctx.clearRect(0,0,innerWidth,innerHeight);stars.forEach(s=>{s.a+=s.s;if(s.a>1||s.a<0)s.s=-s.s;ctx.fillStyle=`rgba(212,175,55,${Math.abs(s.a)*.7})`;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill()});requestAnimationFrame(draw)}resize();addEventListener('resize',resize);draw()}
+function initTodaySky(){const d=new Date(),idx=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000)%28,m=CODEX_DATA.filter(x=>x.type!=='삼원')[idx];document.getElementById('today-date-str').textContent=`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;document.getElementById('today-mansion-badge').textContent=m.name;document.getElementById('today-title').textContent=m.name+'의 상징';document.getElementById('today-desc').textContent=m.desc}
+let activeBirthMansion=null,birthCanvas,birthCtx;
+function calculateBirthSky(e){e.preventDefault();const name=(document.getElementById('user-name')?.value||'').trim()||'방문자',dateVal=document.getElementById('user-date').value,time=Number(document.getElementById('user-time').value);if(!dateVal){showToast('생년월일을 입력해주세요.');return}const date=new Date(dateVal+'T12:00:00'),day=Math.floor((date-new Date(date.getFullYear(),0,0))/86400000),deg=(((day+time/24)/365.25*360)%360+360)%360,idx=Math.floor(deg/360*28)%28,m=CODEX_DATA.filter(x=>x.type!=='삼원')[idx];activeBirthMansion={userName:name,birthDate:dateVal,eclipticDegree:deg.toFixed(1),mansion:m};document.getElementById('sky-placeholder').classList.add('hidden');document.getElementById('sky-coords-display').textContent=`황도 경도 ${deg.toFixed(1)}° / ${m.name}`;document.getElementById('fortune-result-card').classList.remove('hidden');document.getElementById('res-user-tag').textContent=name+' 님의 탄생 별자리 명조';document.getElementById('res-mansion-name').textContent=m.name+' · '+m.type;document.getElementById('res-guardian').textContent=m.type;document.getElementById('res-animal').textContent=m.guardian;document.getElementById('res-element').textContent=m.type==='동청룡'?'목(木) / 성장':m.type==='남주작'?'화(火) / 열정':m.type==='서백호'?'금(金) / 결단':'수(水) / 지혜';document.getElementById('res-ecliptic-deg').textContent=deg.toFixed(1)+'°';document.getElementById('res-fortune-text').textContent=`${name} 님이 태어난 날의 상징 성좌는 ${m.name}입니다. ${m.desc} 이 해석은 전통 천문 사상에서 영감을 얻은 상징적 이야기입니다.`;const themes=[{color:'청록',hex:'#2dd4bf',action:'새로운 것을 배우기',text:'익숙한 방식에서 한 걸음 벗어나 보세요. 작은 호기심이 의외로 즐거운 발견으로 이어질 수 있어요.'},{color:'금빛',hex:'#facc15',action:'고마움 전하기',text:'오늘은 주변의 좋은 점을 발견해 말로 전해 보세요. 따뜻한 한마디가 하루의 분위기를 바꿀 수 있어요.'},{color:'남빛',hex:'#818cf8',action:'잠깐 산책하기',text:'잠시 화면에서 눈을 떼고 바깥 공기를 느껴 보세요. 생각을 정리하는 짧은 휴식이 도움이 될 수 있어요.'},{color:'분홍',hex:'#f9a8d4',action:'좋아하는 음악 듣기',text:'마음에 드는 음악 한 곡으로 기분을 환기해 보세요. 오늘의 작은 즐거움을 챙기는 날로 만들어 보세요.'},{color:'은빛',hex:'#e5e7eb',action:'책상 정리하기',text:'주변을 조금 정돈하면 새롭게 시작할 공간이 생겨요. 부담 없는 일 하나부터 가볍게 마쳐 보세요.'},{color:'보랏빛',hex:'#c4b5fd',action:'아이디어 적기',text:'떠오르는 생각을 판단하지 말고 먼저 적어 보세요. 나중에 멋진 계획으로 자랄 씨앗이 될 수 있어요.'}];const seed=Array.from(name+dateVal+m.name).reduce((sum,ch)=>sum+ch.charCodeAt(0),0),theme=themes[seed%themes.length];document.getElementById('res-fun-fortune').textContent=theme.text;document.getElementById('res-lucky-number').textContent=String(seed%9+1);const colorEl=document.getElementById('res-lucky-color');colorEl.textContent=theme.color;colorEl.style.color=theme.hex;document.getElementById('res-lucky-action').textContent=theme.action;renderBirthSkyCanvas();showToast('탄생 하늘 해석이 완료되었습니다.')}
+function renderBirthSkyCanvas(){birthCanvas=document.getElementById('birth-sky-canvas');const box=birthCanvas.parentElement.getBoundingClientRect(),dpr=devicePixelRatio||1,w=box.width,h=box.height;birthCanvas.width=Math.round(w*dpr);birthCanvas.height=Math.round(h*dpr);birthCanvas.style.width='100%';birthCanvas.style.height='100%';birthCtx=birthCanvas.getContext('2d');birthCtx.setTransform(dpr,0,0,dpr,0,0);birthCtx.clearRect(0,0,w,h);const cx=w/2,cy=h/2,r=Math.min(w,h)*.36;birthCtx.strokeStyle='rgba(212,175,55,.35)';birthCtx.setLineDash([5,5]);birthCtx.beginPath();birthCtx.arc(cx,cy,r,0,Math.PI*2);birthCtx.stroke();birthCtx.setLineDash([]);birthCtx.strokeStyle='rgba(212,175,55,.12)';birthCtx.beginPath();birthCtx.arc(cx,cy,r*.6,0,Math.PI*2);birthCtx.stroke();const mans=CODEX_DATA.filter(x=>x.type!=='삼원');mans.forEach((m,i)=>{const a=i/28*Math.PI*2-Math.PI/2,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r,target=activeBirthMansion&&activeBirthMansion.mansion.id===m.id;birthCtx.strokeStyle=target?'rgba(212,175,55,.55)':'rgba(255,255,255,.05)';birthCtx.beginPath();birthCtx.moveTo(cx,cy);birthCtx.lineTo(x,y);birthCtx.stroke();birthCtx.fillStyle=target?'#fff':'#d4af37';birthCtx.beginPath();birthCtx.arc(x,y,target?7:3.5,0,Math.PI*2);birthCtx.fill();if(target||i%4===0){birthCtx.fillStyle=target?'#fef9e7':'#c6a84a';birthCtx.font=(target?'bold 12px':'10px')+' "Noto Sans KR"';birthCtx.textAlign='center';birthCtx.fillText(m.name.split(' ')[0],cx+Math.cos(a)*(r+19),cy+Math.sin(a)*(r+19))}});if(activeBirthMansion){const a=Number(activeBirthMansion.eclipticDegree)/360*Math.PI*2-Math.PI/2;birthCtx.fillStyle='#ef4444';birthCtx.beginPath();birthCtx.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r,8,0,Math.PI*2);birthCtx.fill()}}
+function saveBirthReading(){if(!activeBirthMansion)return showToast('먼저 나의 하늘을 펼쳐주세요.');const arr=JSON.parse(localStorage.getItem('hwangdo_readings')||'[]');arr.unshift({id:Date.now(),userName:activeBirthMansion.userName,date:activeBirthMansion.birthDate,mansionName:activeBirthMansion.mansion.name,type:activeBirthMansion.mansion.type,desc:activeBirthMansion.mansion.desc,degree:activeBirthMansion.eclipticDegree});localStorage.setItem('hwangdo_readings',JSON.stringify(arr));showToast('탄생 하늘 해석을 저장했습니다.')}
+let studioCanvas,studioCtx,studioNodes=[],studioEdges=[],studioMode='add',selectedNodeId=null,studioHistory=[],showStudioGrid=true,studioW=0,studioH=0,studioReady=false;
+function initStudioCanvas(){studioCanvas=document.getElementById('studio-canvas');if(!studioCanvas||studioReady)return;studioCtx=studioCanvas.getContext('2d');studioCanvas.addEventListener('pointerdown',handleStudioPointerDown);studioReady=true;resizeStudioCanvas();if('ResizeObserver'in window)new ResizeObserver(resizeStudioCanvas).observe(document.getElementById('studio-canvas-wrap'))}
+function resizeStudioCanvas(){if(!studioCanvas)initStudioCanvas();if(!studioCanvas)return;const rect=document.getElementById('studio-canvas-wrap').getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height),dpr=window.devicePixelRatio||1;if(studioW&&studioH&&(w!==studioW||h!==studioH)){const sx=w/studioW,sy=h/studioH;studioNodes.forEach(n=>{n.x*=sx;n.y*=sy})}studioW=w;studioH=h;studioCanvas.width=Math.round(w*dpr);studioCanvas.height=Math.round(h*dpr);studioCanvas.style.width='100%';studioCanvas.style.height='100%';studioCtx.setTransform(dpr,0,0,dpr,0,0);redrawStudioCanvas()}
+function saveStudioState(){studioHistory.push({nodes:JSON.parse(JSON.stringify(studioNodes)),edges:JSON.parse(JSON.stringify(studioEdges))});if(studioHistory.length>30)studioHistory.shift()}
+function handleStudioPointerDown(e){const rect=studioCanvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;const hit=studioNodes.find(n=>Math.hypot(n.x-x,n.y-y)<18);if(studioMode==='add'){if(hit)return;saveStudioState();studioNodes.push({id:Date.now()+Math.random(),x,y,color:document.getElementById('studio-star-color').value});playChime(700,.12)}else if(hit){if(selectedNodeId===null){selectedNodeId=hit.id}else if(selectedNodeId!==hit.id){const exists=studioEdges.some(a=>(a.fromId===selectedNodeId&&a.toId===hit.id)||(a.fromId===hit.id&&a.toId===selectedNodeId));if(!exists){saveStudioState();studioEdges.push({fromId:selectedNodeId,toId:hit.id});playChime(900,.15)}selectedNodeId=null}else selectedNodeId=null}else selectedNodeId=null;updateStudioStats();redrawStudioCanvas()}
+function redrawStudioCanvas(){if(!studioCanvas||!studioCtx)return;const w=studioW||studioCanvas.clientWidth,h=studioH||studioCanvas.clientHeight;if(!w||!h)return;studioCtx.clearRect(0,0,w,h);if(showStudioGrid){studioCtx.strokeStyle='rgba(212,175,55,.07)';studioCtx.lineWidth=1;for(let x=0;x<w;x+=40){studioCtx.beginPath();studioCtx.moveTo(x,0);studioCtx.lineTo(x,h);studioCtx.stroke()}for(let y=0;y<h;y+=40){studioCtx.beginPath();studioCtx.moveTo(0,y);studioCtx.lineTo(w,y);studioCtx.stroke()}}studioEdges.forEach(e=>{const a=studioNodes.find(n=>n.id===e.fromId),b=studioNodes.find(n=>n.id===e.toId);if(!a||!b)return;studioCtx.beginPath();studioCtx.moveTo(a.x,a.y);studioCtx.lineTo(b.x,b.y);studioCtx.strokeStyle='rgba(212,175,55,.75)';studioCtx.lineWidth=2;studioCtx.stroke()});studioNodes.forEach(n=>{const sel=n.id===selectedNodeId;studioCtx.beginPath();studioCtx.arc(n.x,n.y,sel?8:5.5,0,Math.PI*2);studioCtx.fillStyle=n.color||'#d4af37';studioCtx.shadowColor=n.color||'#d4af37';studioCtx.shadowBlur=sel?22:12;studioCtx.fill();studioCtx.shadowBlur=0;if(sel){studioCtx.beginPath();studioCtx.arc(n.x,n.y,13,0,Math.PI*2);studioCtx.strokeStyle='#fff';studioCtx.setLineDash([3,3]);studioCtx.stroke();studioCtx.setLineDash([])}})}
+function setStudioMode(mode){studioMode=mode;selectedNodeId=null;document.querySelectorAll('.studio-tool-btn').forEach(b=>b.classList.remove('tool-active'));document.getElementById('btn-mode-'+mode).classList.add('tool-active');document.getElementById('studio-status-tip').textContent=mode==='add'?'[별 찍기 모드] 캔버스를 눌러 별을 추가하세요.':'[선 잇기 모드] 별 하나를 선택한 뒤 연결할 별을 선택하세요.';redrawStudioCanvas()}
+function updateStudioStats(){document.getElementById('studio-node-count').textContent=`별 ${studioNodes.length}개 / 연결 ${studioEdges.length}개`}
+function recolorStudioStars(){const c=document.getElementById('studio-star-color').value;studioNodes.forEach(n=>n.color=c);redrawStudioCanvas()}
+function toggleGridStudio(){showStudioGrid=!showStudioGrid;redrawStudioCanvas()}
+function undoStudioStep(){if(!studioHistory.length)return;const s=studioHistory.pop();studioNodes=s.nodes;studioEdges=s.edges;selectedNodeId=null;updateStudioStats();redrawStudioCanvas()}
+function clearStudioCanvas(){if(!studioNodes.length&&!studioEdges.length)return;saveStudioState();studioNodes=[];studioEdges=[];selectedNodeId=null;updateStudioStats();redrawStudioCanvas();showToast('별자리 캔버스를 비웠습니다.')}
+function saveCustomConstellation(){const title=document.getElementById('studio-title').value.trim(),desc=document.getElementById('studio-desc').value.trim();if(!title)return alert('별자리 이름을 입력해주세요.');if(!studioNodes.length)return alert('캔버스에 별을 하나 이상 찍어주세요.');redrawStudioCanvas();const saved=JSON.parse(localStorage.getItem('hwangdo_custom')||'[]');saved.unshift({id:'custom_'+Date.now(),title,desc:desc||'나만의 우주에 새긴 별자리입니다.',nodesCount:studioNodes.length,edgesCount:studioEdges.length,color:document.getElementById('studio-star-color').value,image:studioCanvas.toDataURL('image/png'),date:new Date().toLocaleDateString('ko-KR')});localStorage.setItem('hwangdo_custom',JSON.stringify(saved));document.getElementById('studio-title').value='';document.getElementById('studio-desc').value='';renderSavedCustomConstellations();clearStudioCanvas();showToast('별자리를 보관함에 저장했습니다.')}
+function renderCodex(){const grid=document.getElementById('codex-grid');if(!grid)return;const q=(document.getElementById('codex-search').value||'').toLowerCase();grid.innerHTML='';CODEX_DATA.filter(m=>(m.name+' '+m.guardian+' '+m.desc+' '+m.type).toLowerCase().includes(q)).forEach(m=>{const card=document.createElement('article');card.className='glass-card p-5 rounded-xl space-y-3';card.innerHTML=`<span class="text-xs text-gold-400">${m.type} · ${m.stars}</span><h3 class="font-serif text-lg font-bold text-gold-300">${m.name}</h3><p class="text-xs text-gray-300">${m.guardian}</p><p class="text-sm text-gray-400 leading-relaxed">${m.desc}</p>`;grid.appendChild(card)})}
+function switchVaultSubTab(tab){['readings','custom','notes'].forEach(t=>{document.getElementById('vault-'+t+'-section').classList.toggle('hidden',t!==tab);document.getElementById('vtab-'+t).classList.toggle('vault-active',t===tab)})}
+function renderSavedReadings(){const el=document.getElementById('saved-readings-list'),items=JSON.parse(localStorage.getItem('hwangdo_readings')||'[]');el.innerHTML=items.length?'':'<p class="glass-card rounded-xl p-8 text-center text-xs text-gray-400">저장된 탄생 하늘 해석이 없습니다.</p>';items.forEach(i=>{const c=document.createElement('article');c.className='glass-card p-5 rounded-xl';c.innerHTML=`<h3 class="font-serif text-gold-300 font-bold">${escapeHtml(i.mansionName)} · ${escapeHtml(i.type)}</h3><p class="text-xs text-gray-400 mt-2">${escapeHtml(i.userName)} 님 · ${escapeHtml(i.date)}</p><p class="text-sm text-gray-300 mt-3">${escapeHtml(i.desc)}</p><button class="text-xs text-red-300 mt-3" onclick="deleteReading('${i.id}')">삭제</button>`;el.appendChild(c)})}
+function deleteReading(id){localStorage.setItem('hwangdo_readings',JSON.stringify(JSON.parse(localStorage.getItem('hwangdo_readings')||'[]').filter(x=>String(x.id)!==String(id))));renderSavedReadings()}
+function renderSavedCustomConstellations(){const el=document.getElementById('saved-custom-list'),items=JSON.parse(localStorage.getItem('hwangdo_custom')||'[]');el.innerHTML=items.length?'':'<p class="glass-card rounded-xl p-8 text-center text-xs text-gray-400">저장된 별자리가 없습니다.</p>';items.forEach(i=>{const c=document.createElement('article');c.className='glass-card p-4 rounded-xl space-y-3';c.innerHTML=`<img src="${i.image}" alt="별자리 그림" class="w-full aspect-square object-contain bg-navy-900 rounded-lg"><h3 class="font-serif text-gold-300 font-bold">${escapeHtml(i.title)}</h3><p class="text-sm text-gray-300">${escapeHtml(i.desc)}</p><p class="text-xs text-gray-400">별 ${i.nodesCount}개 · 선 ${i.edgesCount}개 · ${escapeHtml(i.date)}</p><button class="text-xs text-red-300" onclick="deleteCustom('${i.id}')">삭제</button>`;el.appendChild(c)})}
+function deleteCustom(id){localStorage.setItem('hwangdo_custom',JSON.stringify(JSON.parse(localStorage.getItem('hwangdo_custom')||'[]').filter(x=>x.id!==id)));renderSavedCustomConstellations()}
+let pendingNotePhotoData=null;
+function previewNotePhoto(event){const file=event.target.files&&event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){showToast('이미지 파일을 선택해주세요.');event.target.value='';return}if(file.size>15*1024*1024){showToast('사진은 15MB 이하 파일을 선택해주세요.');event.target.value='';return}const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const maxSide=1200,scale=Math.min(1,maxSide/Math.max(img.width,img.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);pendingNotePhotoData=canvas.toDataURL('image/jpeg',.78);document.getElementById('note-photo-preview').src=pendingNotePhotoData;document.getElementById('note-photo-preview-wrap').classList.remove('hidden')};img.onerror=()=>showToast('사진을 읽을 수 없습니다. 다른 이미지를 선택해주세요.');img.src=reader.result};reader.readAsDataURL(file)}
+function clearNotePhoto(){pendingNotePhotoData=null;const input=document.getElementById('note-photo-input');if(input)input.value='';document.getElementById('note-photo-preview').removeAttribute('src');document.getElementById('note-photo-preview-wrap').classList.add('hidden')}
+function saveSkyNote(){const input=document.getElementById('note-input'),text=input.value.trim();if(!text&&!pendingNotePhotoData){showToast('일기 내용이나 사진을 추가해주세요.');return}const a=JSON.parse(localStorage.getItem('hwangdo_notes')||'[]');const item={id:Date.now(),text:text,date:new Date().toLocaleString('ko-KR'),photo:pendingNotePhotoData||null};a.unshift(item);try{localStorage.setItem('hwangdo_notes',JSON.stringify(a))}catch(err){showToast('저장 공간이 부족합니다. 사진 크기를 줄이거나 오래된 일기를 삭제해주세요.');return}input.value='';clearNotePhoto();renderSkyNotes();showToast('사진과 함께 하늘 일기를 저장했습니다.')}
+function renderSkyNotes(){const el=document.getElementById('sky-notes-list'),a=JSON.parse(localStorage.getItem('hwangdo_notes')||'[]');el.innerHTML=a.length?'':'<p class="text-center text-xs text-gray-400 py-6">작성된 하늘 일기가 없습니다.</p>';a.forEach(n=>{const c=document.createElement('article');c.className='glass-card p-4 rounded-xl';const photo=n.photo?`<img src="${n.photo}" alt="일기에 첨부한 사진" loading="lazy" class="mt-3 w-full max-h-96 object-contain rounded-lg border border-gold-500/20 bg-navy-900">`:'';c.innerHTML=`<p class="text-sm whitespace-pre-wrap">${escapeHtml(n.text||'')}</p>${photo}<p class="text-xs text-gray-400 mt-2">${escapeHtml(n.date)}</p><button class="text-xs text-red-300 mt-2" onclick="deleteNote('${n.id}')">삭제</button>`;el.appendChild(c)})}
+function deleteNote(id){localStorage.setItem('hwangdo_notes',JSON.stringify(JSON.parse(localStorage.getItem('hwangdo_notes')||'[]').filter(x=>String(x.id)!==String(id))));renderSkyNotes()}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const extraStyle=document.createElement('style');extraStyle.textContent='.nav-btn{color:#d1d5db;border:1px solid transparent}.nav-btn:hover{color:#f5e0a3}.nav-active{color:#e5c158;background:rgba(212,175,55,.1);border-color:rgba(212,175,55,.3)}.studio-tool-btn{background:#0b0f19;color:#d1d5db;border-color:rgba(212,175,55,.3)}.studio-tool-btn.tool-active{background:rgba(212,175,55,.2);border-color:#e5c158;color:#f5e0a3}.vault-btn{padding:.6rem 1rem;border:1px solid rgba(212,175,55,.2);border-radius:.5rem;background:#0b0f19;color:#9ca3af;font-size:.8rem}.vault-btn.vault-active{background:rgba(212,175,55,.2);border-color:#d4af37;color:#f5e0a3}';document.head.appendChild(extraStyle);
+window.addEventListener('load',()=>{initBgStars();initTodaySky();renderCodex();initStudioCanvas();renderSavedReadings();renderSavedCustomConstellations();renderSkyNotes();window.addEventListener('resize',()=>{if(activeBirthMansion)renderBirthSkyCanvas()})});
+</script>
 </body>
 </html>
